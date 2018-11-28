@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		490708BB21AF020B00C27C38 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 490708BA21AF020B00C27C38 /* main.cpp */; };
+		490708C321AF060200C27C38 /* nnet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 490708C121AF060200C27C38 /* nnet.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,9 @@
 /* Begin PBXFileReference section */
 		490708B721AF020B00C27C38 /* GMU-XVEC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "GMU-XVEC"; sourceTree = BUILT_PRODUCTS_DIR; };
 		490708BA21AF020B00C27C38 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		490708C121AF060200C27C38 /* nnet.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = nnet.cpp; sourceTree = "<group>"; };
+		490708C221AF060200C27C38 /* nnet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = nnet.hpp; sourceTree = "<group>"; };
+		490708C421AF0E1700C27C38 /* utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +62,9 @@
 			isa = PBXGroup;
 			children = (
 				490708BA21AF020B00C27C38 /* main.cpp */,
+				490708C121AF060200C27C38 /* nnet.cpp */,
+				490708C221AF060200C27C38 /* nnet.hpp */,
+				490708C421AF0E1700C27C38 /* utils.hpp */,
 			);
 			path = "GMU-XVEC";
 			sourceTree = "<group>";
@@ -118,6 +125,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				490708C321AF060200C27C38 /* nnet.cpp in Sources */,
 				490708BB21AF020B00C27C38 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
