@@ -6,10 +6,6 @@
 //  Copyright © 2018 Jan Profant. All rights reserved.
 //
 
-#include "nnet.hpp"
-#include "utils.hpp"
-#include "stacking.hpp"
-#include "dense.hpp"
 
 #include <fstream>
 #include <vector>
@@ -18,6 +14,15 @@
 #include <set>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
+
+#include "nnet.hpp"
+#include "utils.hpp"
+#include "layers/stacking.hpp"
+#include "layers/dense.hpp"
+#include "layers/relu.hpp"
+#include "layers/batchnorm.hpp"
+#include "layers/statistics_extraction.hpp"
+#include "layers/statistics_pooling.hpp"
 
 
 NNet::NNet(std::string nnet_path) {
@@ -147,7 +152,8 @@ NNet::NNet(std::string nnet_path) {
     // iterate over layers and connect them starting from input
     while (input_node.find("output") != input_node.end()) {
         input_node = nodes[input_node["output"]];
-        
+        input_node_matrices = nodes_matrices[input_node["component"]];
+        InitLayersFromNode(input_node, input_node_matrices);
     }
     
 }
@@ -281,10 +287,36 @@ void NNet::ParseFloatsLine(std::vector<float> &matrix, std::vector<std::string> 
 
 
 void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node_attrs, std::unordered_map<std::string, std::vector<float>> &matrix_attrs) {
-    if (node_attrs["type"] == "NaturalGradientAffineComponent") {
+    std::string name = node_attrs["component"];
+    std::string type = node_attrs["type"];
+    bool is_initialized = false;
+    
+    if (type == "NaturalGradientAffineComponent") {
         if (node_attrs.find("stacking") != node_attrs.end())
-            layers.push_back(StackingLayer(node_attrs["component"], str2ints(node_attrs["offsets"])));
+            layers.push_back(StackingLayer(name, str2ints(node_attrs["stacking"])));
+        layers.push_back(DenseLayer(name, &matrix_attrs["LinearParams"][0], &matrix_attrs["BiasParams"][0]));
+        is_initialized = true;
     }
+    if (type == "RectifiedLinearComponent") {
+        layers.push_back(ReLULayer(name));
+        is_initialized = true;
+    }
+    if (type == "BatchNormComponent") {
+        layers.push_back(BatchNormLayer(name, &matrix_attrs["StatsMean"][0], &matrix_attrs["StatsVar"][0], std::stof(node_attrs["Epsilon"])));
+        is_initialized = true;
+    }
+    if (type == "StatisticsExtractionComponent") {
+        layers.push_back(StatisticsExtractionLayer(name, node_attrs["IncludeVarinance"] == "T"));
+        is_initialized = true;
+    }
+    if (type == "StatisticsPoolingComponent") {
+        layers.push_back(StatisticsPoolingLayer(name, std::stoi(node_attrs["InputDim"]), node_attrs["OutputStddevs"] == "T", std::stoi(node_attrs["LeftContext"]), std::stoi(node_attrs["RightContext"]), std::stof(node_attrs["VarianceFloor"])));
+        is_initialized = true;
+    }
+    if (type == "output-node")
+        is_initialized = true;
+    
+    assert(is_initialized);
 }
 
 
