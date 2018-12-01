@@ -15,6 +15,7 @@
 #include <vector>
 #include <unordered_map>
 #include <regex>
+#include <set>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 
@@ -284,4 +285,9 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
         if (node_attrs.find("stacking") != node_attrs.end())
             layers.push_back(StackingLayer(node_attrs["component"], str2ints(node_attrs["offsets"])));
     }
+}
+
+
+Layer::Layer(std::string name) {
+    this->name = name;
 }

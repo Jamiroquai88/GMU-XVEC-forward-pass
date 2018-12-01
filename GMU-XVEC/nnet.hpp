@@ -17,7 +17,9 @@
 
 class Layer {
 public:
-    Layer();
+    Layer(std::string name);
+    
+    std::string name;
 };
 
 

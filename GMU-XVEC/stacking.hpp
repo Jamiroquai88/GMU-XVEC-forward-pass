@@ -18,7 +18,7 @@
 
 class StackingLayer : public Layer {
 public:
-    StackingLayer(std::string name, std::vector<int> offsets);
+    StackingLayer(std::string name, std::vector<int> offsets) : Layer(name), offsets(offsets) {};
 
 private:
     std::vector<int> offsets;

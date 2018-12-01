@@ -10,7 +10,3 @@
 
 #include "stacking.hpp"
 
-
-StackingLayer::StackingLayer(std::string name, std::vector<int> offsets) {
-    this->offsets = offsets;
-}
