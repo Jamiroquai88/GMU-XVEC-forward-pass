@@ -9,18 +9,20 @@
 #ifndef stacking_h
 #define stacking_h
 
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include "nnet.hpp"
+
 
 class StackingLayer : public Layer {
 public:
-    StackingLayer(std::string name, std::vector<int> offsets) {this->offsets = offsets;}
+    StackingLayer(std::string name, std::vector<int> offsets);
 
 private:
     std::vector<int> offsets;
 };
 
-//
-//StackingLayer::StackingLayer(std::string name, std::vector<int> offsets) {
-//    this->offsets = offsets;
-//}
 
 #endif /* stacking_h */
