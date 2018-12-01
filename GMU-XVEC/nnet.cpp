@@ -8,8 +8,8 @@
 
 #include "nnet.hpp"
 #include "utils.hpp"
-#include "layers/stacking.hpp"
-#include "layers/dense.hpp"
+#include "stacking.hpp"
+#include "dense.hpp"
 
 #include <fstream>
 #include <vector>
