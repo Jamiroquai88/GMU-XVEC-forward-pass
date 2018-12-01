@@ -26,8 +26,13 @@ public:
     NNet(std::string nnet_path);
 private:
     std::vector<Layer> layers;
+    
     std::unordered_map<std::string, std::string> ParseNodeAttributes(std::vector<std::string> attributes, std::string type);
-    std::string ParseNodeAttributeValue(std::string value, std::vector<std::string> offsets);
+    std::string ParseNodeAttributeValue(std::string value, std::vector<std::string> &offsets);
+    std::unordered_map<std::string, std::string> ParseComponentAttributes(                                                                          std::vector<std::string> line_split, std::string &matrix_key, bool &end, std::unordered_map<std::string, std::vector<float>> &matrix_attrs);
+    void ParseFloatsLine(std::vector<float> &matrix, std::vector<std::string> line_split, bool &matrix_end);
+    
+    void InitLayersFromNode(std::unordered_map<std::string, std::string> &node_attrs, std::unordered_map<std::string, std::vector<float>> &matrix_attrs);
 };
 
 #endif /* nnet_hpp */
