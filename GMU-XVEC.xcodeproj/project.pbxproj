@@ -61,12 +61,20 @@
 		490708B921AF020B00C27C38 /* GMU-XVEC */ = {
 			isa = PBXGroup;
 			children = (
+				492088A721B2D2B2005EAEFE /* layers */,
 				490708BA21AF020B00C27C38 /* main.cpp */,
 				490708C121AF060200C27C38 /* nnet.cpp */,
 				490708C221AF060200C27C38 /* nnet.hpp */,
 				490708C421AF0E1700C27C38 /* utils.hpp */,
 			);
 			path = "GMU-XVEC";
+			sourceTree = "<group>";
+		};
+		492088A721B2D2B2005EAEFE /* layers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = layers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,16 +255,42 @@
 		490708BF21AF020B00C27C38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					/opt/local/include,
+					/usr/local/include/boost/,
+					/usr/local/Cellar/boost/1.67.0_1/include/,
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					/opt/local/lib,
+					/usr/local/lib/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"REZ_SEARCH_PATHS[sdk=*]" = /usr/local/include;
+				SYSTEM_HEADER_SEARCH_PATHS = /usr/local/include/boost;
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = /usr/local/include/boost;
 			};
 			name = Debug;
 		};
 		490708C021AF020B00C27C38 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					/opt/local/include,
+					/usr/local/include/boost/,
+					/usr/local/Cellar/boost/1.67.0_1/include/,
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					/opt/local/lib,
+					/usr/local/lib/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"REZ_SEARCH_PATHS[sdk=*]" = /usr/local/include/boost;
+				SYSTEM_HEADER_SEARCH_PATHS = /usr/local/include/boost;
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = /usr/local/include/boost;
 			};
 			name = Release;
 		};
