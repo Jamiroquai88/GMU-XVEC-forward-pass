@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "nnet.hpp"
+#include "../nnet.hpp"
 
 
 class StackingLayer : public Layer {

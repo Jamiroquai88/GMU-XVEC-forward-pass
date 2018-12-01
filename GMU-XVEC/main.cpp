@@ -34,6 +34,7 @@ int main(int argc, char * argv[]) {
     }
     if (features_path.length() == 0 || nnet_path.length() == 0) {
         std::cerr << "ERROR: Argument '-i' and '-n' must be specified." << std::endl;
+        exit(1);
     }
     
     NNet nnet = NNet(nnet_path);

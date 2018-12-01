@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include "nnet.hpp"
+#include "../nnet.hpp"
 
 
 class StatisticsExtractionLayer : public Layer {
