@@ -8,7 +8,7 @@ all: main
 debug: CPFLAGS += -DDEBUG -g
 debug: main
 
-main: main.o nnet.o stacking.o
+main: main.o nnet.o
 	$(CP) $(CPFLAGS) $^ -o $@ -lm
 
 %.o:%.cpp
