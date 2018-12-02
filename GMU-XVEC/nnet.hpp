@@ -14,6 +14,13 @@
 #include <vector>
 #include <unordered_map>
 
+#define MAC
+#ifdef MAC
+    #include <OpenCL/cl.h>
+#else
+    #include <CL/cl.h>
+#endif
+
 
 class Layer {
 public:
@@ -27,7 +34,7 @@ public:
 class NNet {
 public:
     NNet(std::string nnet_path);
-    float * forward(std::string fea_path);
+    float * forward(std::string fea_path, cl_device_id device, cl_context context);
     
 private:
     std::vector<Layer*> layers;

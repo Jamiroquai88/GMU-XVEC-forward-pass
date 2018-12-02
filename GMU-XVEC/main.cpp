@@ -13,7 +13,42 @@
 #include <string>
 
 #include "nnet.hpp"
-//#include "utils.hpp"
+
+#define CL_SILENCE_DEPRECATION true
+#define MAC
+
+#ifdef MAC
+    #include <OpenCL/cl.h>
+#else
+    #include <CL/cl.h>
+#endif
+
+
+/* Find a GPU or CPU associated with the first available platform */
+cl_device_id create_device() {
+    cl_platform_id platform;
+    cl_device_id dev;
+    int err;
+    
+    /* Identify a platform */
+    err = clGetPlatformIDs(1, &platform, NULL);
+    if(err < 0) {
+        std::cerr << "ERROR: Couldn't identify a platform." << std::endl;
+        exit(1);
+    }
+    
+    /* Access a device */
+    err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &dev, NULL);
+    if(err == CL_DEVICE_NOT_FOUND) {
+        err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 1, &dev, NULL);
+    }
+    if(err < 0) {
+        std::cerr << "ERROR: Couldn't access any devices." << std::endl;
+        exit(1);
+    }
+    
+    return dev;
+}
 
 
 int main(int argc, char * argv[]) {
@@ -38,8 +73,17 @@ int main(int argc, char * argv[]) {
         exit(1);
     }
     
+    cl_device_id device = create_device();
+    cl_context context;
+    cl_int err;
+    context = clCreateContext(NULL, 1, &device, NULL, NULL, &err);
+    if (err < 0) {
+        std::cerr << "ERROR: Could not create context." << std::endl;
+        exit(1);
+    }
+    
     NNet nnet = NNet(nnet_path);
-    nnet.forward(features_path);
+    nnet.forward(features_path, device, context);
  
     return 0;
 }

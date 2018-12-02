@@ -298,7 +298,7 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
     if (type == "NaturalGradientAffineComponent") {
         if (node_attrs.find("stacking") != node_attrs.end())
             layers.push_back(new StackingLayer(name, str2ints(node_attrs["stacking"])));
-        layers.push_back(new DenseLayer(name, &matrix_attrs["LinearParams"][0], &matrix_attrs["BiasParams"][0]));
+        layers.push_back(new DenseLayer(name, matrix_attrs["LinearParams"], matrix_attrs["BiasParams"]));
         layers_types.push_back("NaturalGradientAffineComponent");
         is_initialized = true;
     }
@@ -329,11 +329,11 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
 }
 
 
-float * NNet::forward(std::string fea_path) {
+float * NNet::forward(std::string fea_path, cl_device_id device, cl_context context) {
     unsigned long num_samples;
     unsigned long num_dims;
     std::vector<float> features = read_fea(fea_path, num_samples, num_dims);
-    float * input = &features[0];
+    std::vector<float> input = features;
     std::vector<float> output;
     
     std::string type;
@@ -341,7 +341,10 @@ float * NNet::forward(std::string fea_path) {
         type = layers_types[i];
         if (type == "NaturalGradientAffineComponent") {
             StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
-            output = layer->forward(input, num_samples, num_dims);
+            output = layer->forward(input, num_samples, num_dims, device, context);
+            input = output;
+            DenseLayer *layer2 = dynamic_cast<DenseLayer*>(layers[++i]);
+            output = layer2->forward(input, num_samples, num_dims, device, context);
         }
         
     }

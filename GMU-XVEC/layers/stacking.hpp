@@ -20,14 +20,15 @@
 class StackingLayer : virtual public Layer {
 public:
     StackingLayer(std::string name, std::vector<int> offsets) : offsets(offsets) {};
-    std::vector<float> forward(float *input, unsigned long num_samples, unsigned long num_dims);
+    std::vector<float> forward(std::vector<float> input, unsigned long num_samples, unsigned long num_dims, cl_device_id device, cl_context context);
 
 private:
     std::vector<int> offsets;
 };
 
 
-std::vector<float> StackingLayer::forward(float *input, unsigned long num_samples, unsigned long num_dims) {
+std::vector<float> StackingLayer::forward(std::vector<float> input, unsigned long num_samples, unsigned long num_dims, cl_device_id device, cl_context context) {
+      
     int maxval = offsets[std::max_element(offsets.begin(), offsets.end()) - offsets.begin()];
     int minval = offsets[std::min_element(offsets.begin(), offsets.end()) - offsets.begin()];
     unsigned long cols = num_samples + abs(minval) + maxval;
