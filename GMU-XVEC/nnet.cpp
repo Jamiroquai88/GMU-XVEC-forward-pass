@@ -29,6 +29,10 @@ NNet::NNet(std::string nnet_path) {
     std::string line;
     std::vector<std::string> lines;
     std::ifstream infile(nnet_path);
+    if (!infile.good()) {
+        std::cerr << "Path to nnet file does not exist: " << nnet_path << std::endl;
+        exit(1);
+    }
     
     while (std::getline(infile, line)) {
         lines.push_back(line);
@@ -293,28 +297,52 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
     
     if (type == "NaturalGradientAffineComponent") {
         if (node_attrs.find("stacking") != node_attrs.end())
-            layers.push_back(StackingLayer(name, str2ints(node_attrs["stacking"])));
-        layers.push_back(DenseLayer(name, &matrix_attrs["LinearParams"][0], &matrix_attrs["BiasParams"][0]));
+            layers.push_back(new StackingLayer(name, str2ints(node_attrs["stacking"])));
+        layers.push_back(new DenseLayer(name, &matrix_attrs["LinearParams"][0], &matrix_attrs["BiasParams"][0]));
+        layers_types.push_back("NaturalGradientAffineComponent");
         is_initialized = true;
     }
     if (type == "RectifiedLinearComponent") {
-        layers.push_back(ReLULayer(name));
+        layers.push_back(new ReLULayer(name));
+        layers_types.push_back("RectifiedLinearComponent");
         is_initialized = true;
     }
     if (type == "BatchNormComponent") {
-        layers.push_back(BatchNormLayer(name, &matrix_attrs["StatsMean"][0], &matrix_attrs["StatsVar"][0], std::stof(node_attrs["Epsilon"])));
+        layers.push_back(new BatchNormLayer(name, &matrix_attrs["StatsMean"][0], &matrix_attrs["StatsVar"][0], std::stof(node_attrs["Epsilon"])));
+        layers_types.push_back("BatchNormComponent");
         is_initialized = true;
     }
     if (type == "StatisticsExtractionComponent") {
-        layers.push_back(StatisticsExtractionLayer(name, node_attrs["IncludeVarinance"] == "T"));
+        layers.push_back(new StatisticsExtractionLayer(name, node_attrs["IncludeVarinance"] == "T"));
+        layers_types.push_back("StatisticsExtractionComponent");
         is_initialized = true;
     }
     if (type == "StatisticsPoolingComponent") {
-        layers.push_back(StatisticsPoolingLayer(name, std::stoi(node_attrs["InputDim"]), node_attrs["OutputStddevs"] == "T", std::stoi(node_attrs["LeftContext"]), std::stoi(node_attrs["RightContext"]), std::stof(node_attrs["VarianceFloor"])));
+        layers.push_back(new StatisticsPoolingLayer(name, std::stoi(node_attrs["InputDim"]), node_attrs["OutputStddevs"] == "T", std::stoi(node_attrs["LeftContext"]), std::stoi(node_attrs["RightContext"]), std::stof(node_attrs["VarianceFloor"])));
+        layers_types.push_back("StatisticsPoolingComponent");
         is_initialized = true;
     }
     if (type == "output-node")
         is_initialized = true;
     
     assert(is_initialized);
+}
+
+
+float * NNet::forward(std::string fea_path) {
+    unsigned long num_samples;
+    unsigned long num_dims;
+    float * features = read_fea(fea_path, num_samples, num_dims);
+    float * input = features;
+    
+    std::string type;
+    for (unsigned int i = 0; i < layers.size(); i++) {
+        type = layers_types[i];
+        if (type == "NaturalGradientAffineComponent") {
+            StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
+            layer->forward(features, num_samples, num_samples);
+        }
+        
+    }
+    return NULL;
 }

@@ -16,10 +16,10 @@
 #include "../nnet.hpp"
 
 
-class StackingLayer : public Layer {
+class StackingLayer : virtual public Layer {
 public:
-    StackingLayer(std::string name, std::vector<int> offsets) : Layer(name), offsets(offsets) {};
-    float * forward(float *input, int num_samples, int num_dims);
+    StackingLayer(std::string name, std::vector<int> offsets) : offsets(offsets) {};
+    float * forward(float *input, unsigned long num_samples, unsigned long num_dims);
 
 private:
     std::vector<int> offsets;
@@ -29,6 +29,9 @@ private:
 #endif /* stacking_h */
 
 
-float * StackingLayer::forward(float *input, int num_samples, int num_dims) {
+float * StackingLayer::forward(float *input, unsigned long num_samples, unsigned long num_dims) {
+    int maxval = offsets[std::max_element(offsets.begin(), offsets.end()) - offsets.begin()];
+    int minval = offsets[std::min_element(offsets.begin(), offsets.end()) - offsets.begin()];
+    
     return NULL;
 }

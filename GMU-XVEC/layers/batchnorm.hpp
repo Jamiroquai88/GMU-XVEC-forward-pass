@@ -16,10 +16,10 @@
 #include "../nnet.hpp"
 
 
-class BatchNormLayer : public Layer {
+class BatchNormLayer : virtual public Layer {
 public:
-    BatchNormLayer(std::string name, float *mean, float *variance, float epsilon) : Layer(name), mean(mean), variance(variance), epsilon(epsilon) {};
-    float * forward(float *input, int num_samples, int num_dims);
+    BatchNormLayer(std::string name, float *mean, float *variance, float epsilon) : mean(mean), variance(variance), epsilon(epsilon) {};
+    float * forward(float *input, unsigned long num_samples, unsigned long num_dims);
     
 private:
     float *mean;
@@ -28,7 +28,7 @@ private:
 };
 
 
-float * BatchNormLayer::forward(float *input, int num_samples, int num_dims) {
+float * BatchNormLayer::forward(float *input, unsigned long num_samples, unsigned long num_dims) {
     return NULL;
 }
 

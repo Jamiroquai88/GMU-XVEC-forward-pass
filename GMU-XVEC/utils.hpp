@@ -14,7 +14,6 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
-#include <assert.hpp>
 
 
 std::vector<std::string> split(const std::string &s, char delim) {
@@ -79,17 +78,21 @@ float * read_fea(std::string fea_path, unsigned long &num_samples, unsigned long
     std::string line;
     std::vector<std::string> lines;
     std::ifstream infile(fea_path);
+    if (!infile.good()) {
+        std::cerr << "Path to feature file does not exist: " << fea_path << std::endl;
+        exit(1);
+    }
     
     while (std::getline(infile, line)) {
         lines.push_back(line);
     }
-    
+
     unsigned long lines_num = lines.size();
     std::vector<float> output;
     std::vector<std::string> splitted_line;
     unsigned long current_num_dims;
     unsigned long old_num_dims = 0;
-    
+
     for (auto line : lines) {
         splitted_line = split(line, ' ');
         current_num_dims = splitted_line.size();

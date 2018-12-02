@@ -17,8 +17,8 @@
 
 class Layer {
 public:
-    Layer(std::string name) : name(name) {};
-    virtual float * forward(float *input, int num_samples, int num_dims) {return NULL;};
+    
+    virtual void foo() {};
     
     std::string name;
 };
@@ -27,8 +27,11 @@ public:
 class NNet {
 public:
     NNet(std::string nnet_path);
+    float * forward(std::string fea_path);
+    
 private:
-    std::vector<Layer> layers;
+    std::vector<Layer*> layers;
+    std::vector<std::string> layers_types;
     
     std::unordered_map<std::string, std::string> ParseNodeAttributes(std::vector<std::string> attributes, std::string type);
     std::string ParseNodeAttributeValue(std::string value, std::vector<std::string> &offsets);

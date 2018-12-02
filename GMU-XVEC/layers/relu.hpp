@@ -16,15 +16,15 @@
 #include "../nnet.hpp"
 
 
-class ReLULayer : public Layer {
+class ReLULayer : virtual public Layer {
 public:
-    ReLULayer(std::string name) : Layer(name) {};
-    float * forward(float *input, int num_samples, int num_dims);
+    ReLULayer(std::string name) {};
+    float * forward(float *input, unsigned long num_samples, unsigned long num_dims);
     
 };
 
 
-float * ReLULayer::forward(float *input, int num_samples, int num_dims) {
+float * ReLULayer::forward(float *input, unsigned long num_samples, unsigned long num_dims) {
     return NULL;
 }
 

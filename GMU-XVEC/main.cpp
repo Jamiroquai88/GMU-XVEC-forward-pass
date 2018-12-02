@@ -13,7 +13,7 @@
 #include <string>
 
 #include "nnet.hpp"
-#include "utils.hpp"
+//#include "utils.hpp"
 
 
 int main(int argc, char * argv[]) {
@@ -38,10 +38,8 @@ int main(int argc, char * argv[]) {
         exit(1);
     }
     
-//    NNet nnet = NNet(nnet_path);
-    unsigned long num_samples;
-    unsigned long num_dims;
-    read_fea(features_path, num_samples, num_dims);
+    NNet nnet = NNet(nnet_path);
+    nnet.forward(features_path);
  
     return 0;
 }

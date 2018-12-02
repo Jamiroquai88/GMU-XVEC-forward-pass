@@ -16,10 +16,10 @@
 #include "../nnet.hpp"
 
 
-class DenseLayer : public Layer {
+class DenseLayer : virtual public Layer {
 public:
-    DenseLayer(std::string name, float *linear, float *bias) : Layer(name), linear(linear), bias(bias) {};
-    float * forward(float *input, int num_samples, int num_dims);
+    DenseLayer(std::string name, float *linear, float *bias) : linear(linear), bias(bias) {};
+    float * forward(float *input, unsigned long num_samples, unsigned long num_dims);
     
 private:
     float *linear;
@@ -27,7 +27,7 @@ private:
 };
 
 
-float * DenseLayer::forward(float *input, int num_samples, int num_dims) {
+float * DenseLayer::forward(float *input, unsigned long num_samples, unsigned long num_dims) {
     return NULL;
 }
 
