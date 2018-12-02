@@ -14,6 +14,7 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
+#include <assert.hpp>
 
 
 std::vector<std::string> split(const std::string &s, char delim) {
@@ -94,8 +95,12 @@ float * read_fea(std::string fea_path, unsigned long &num_samples, unsigned long
         current_num_dims = splitted_line.size();
         if (old_num_dims == 0)
             old_num_dims = current_num_dims;
-        else
-            assert (old_num_dims == current_num_dims);
+        else {
+            if (old_num_dims != current_num_dims) {
+                std::cerr << "Incorrect format of input features in file: " << fea_path << std::endl;
+                exit(1);
+            }
+        }
         for (auto x : splitted_line)
             output.push_back(std::stof(x));
     }
