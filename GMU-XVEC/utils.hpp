@@ -74,7 +74,16 @@ std::vector<int> str2ints(std::string str) {
 }
 
 
-float * read_fea(std::string fea_path, unsigned long &num_samples, unsigned long &num_dims) {
+void transpose(float *src, float *dst, const unsigned long N, const unsigned long M) {
+    for(int n = 0; n<N*M; n++) {
+        int i = n/N;
+        int j = n%N;
+        dst[n] = src[M*j + i];
+    }
+}
+
+
+std::vector<float> read_fea(std::string fea_path, unsigned long &num_samples, unsigned long &num_dims) {
     std::string line;
     std::vector<std::string> lines;
     std::ifstream infile(fea_path);
@@ -109,7 +118,11 @@ float * read_fea(std::string fea_path, unsigned long &num_samples, unsigned long
     }
     num_samples = lines_num;
     num_dims = old_num_dims;
-    return &output[0];
+    
+    std::vector<float> output_transposed(output.size());
+    transpose(&output[0], &output_transposed[0], num_samples, num_dims);
+    output.clear();
+    return output_transposed;
 }
 
 

@@ -332,15 +332,16 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
 float * NNet::forward(std::string fea_path) {
     unsigned long num_samples;
     unsigned long num_dims;
-    float * features = read_fea(fea_path, num_samples, num_dims);
-    float * input = features;
+    std::vector<float> features = read_fea(fea_path, num_samples, num_dims);
+    float * input = &features[0];
+    std::vector<float> output;
     
     std::string type;
     for (unsigned int i = 0; i < layers.size(); i++) {
         type = layers_types[i];
         if (type == "NaturalGradientAffineComponent") {
             StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
-            layer->forward(features, num_samples, num_samples);
+            output = layer->forward(input, num_samples, num_dims);
         }
         
     }
