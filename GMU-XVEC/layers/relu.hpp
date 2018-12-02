@@ -19,8 +19,14 @@
 class ReLULayer : public Layer {
 public:
     ReLULayer(std::string name) : Layer(name) {};
+    float * forward(float *input, int num_samples, int num_dims);
     
 };
+
+
+float * ReLULayer::forward(float *input, int num_samples, int num_dims) {
+    return NULL;
+}
 
 
 #endif /* relu_h */

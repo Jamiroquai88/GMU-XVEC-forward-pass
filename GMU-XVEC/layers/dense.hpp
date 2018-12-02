@@ -19,10 +19,16 @@
 class DenseLayer : public Layer {
 public:
     DenseLayer(std::string name, float *linear, float *bias) : Layer(name), linear(linear), bias(bias) {};
+    float * forward(float *input, int num_samples, int num_dims);
     
 private:
     float *linear;
     float *bias;
 };
+
+
+float * DenseLayer::forward(float *input, int num_samples, int num_dims) {
+    return NULL;
+}
 
 #endif /* dense_h */

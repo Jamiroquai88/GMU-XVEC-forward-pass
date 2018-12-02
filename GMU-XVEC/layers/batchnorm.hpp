@@ -19,12 +19,18 @@
 class BatchNormLayer : public Layer {
 public:
     BatchNormLayer(std::string name, float *mean, float *variance, float epsilon) : Layer(name), mean(mean), variance(variance), epsilon(epsilon) {};
+    float * forward(float *input, int num_samples, int num_dims);
     
 private:
     float *mean;
     float *variance;
     float epsilon;
 };
+
+
+float * BatchNormLayer::forward(float *input, int num_samples, int num_dims) {
+    return NULL;
+}
 
 
 #endif /* batchnorm_h */

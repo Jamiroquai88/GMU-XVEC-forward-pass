@@ -318,8 +318,3 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
     
     assert(is_initialized);
 }
-
-
-Layer::Layer(std::string name) {
-    this->name = name;
-}

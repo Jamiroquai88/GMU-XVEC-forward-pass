@@ -20,9 +20,16 @@
 class StatisticsExtractionLayer : public Layer {
 public:
     StatisticsExtractionLayer(std::string name, bool include_variance) : Layer(name), include_variance(include_variance) {};
+    float * forward(float *input, int num_samples, int num_dims);
     
 private:
     bool include_variance;
 };
+
+
+float * StatisticsExtractionLayer::forward(float *input, int num_samples, int num_dims) {
+    return NULL;
+}
+
 
 #endif /* statistics_extraction_h */

@@ -74,5 +74,36 @@ std::vector<int> str2ints(std::string str) {
 }
 
 
+float * read_fea(std::string fea_path, unsigned long &num_samples, unsigned long &num_dims) {
+    std::string line;
+    std::vector<std::string> lines;
+    std::ifstream infile(fea_path);
+    
+    while (std::getline(infile, line)) {
+        lines.push_back(line);
+    }
+    
+    unsigned long lines_num = lines.size();
+    std::vector<float> output;
+    std::vector<std::string> splitted_line;
+    unsigned long current_num_dims;
+    unsigned long old_num_dims = 0;
+    
+    for (auto line : lines) {
+        splitted_line = split(line, ' ');
+        current_num_dims = splitted_line.size();
+        if (old_num_dims == 0)
+            old_num_dims = current_num_dims;
+        else
+            assert (old_num_dims == current_num_dims);
+        for (auto x : splitted_line)
+            output.push_back(std::stof(x));
+    }
+    num_samples = lines_num;
+    num_dims = old_num_dims;
+    return &output[0];
+}
+
+
 
 #endif /* utils_h */

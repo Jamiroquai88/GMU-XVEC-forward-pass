@@ -17,7 +17,8 @@
 
 class Layer {
 public:
-    Layer(std::string name);
+    Layer(std::string name) : name(name) {};
+    virtual float * forward(float *input, int num_samples, int num_dims) {return NULL;};
     
     std::string name;
 };
