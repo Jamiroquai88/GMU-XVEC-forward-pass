@@ -8,7 +8,7 @@ all: main
 debug: CPFLAGS += -DDEBUG -g
 debug: main
 
-main: main.o nnet.o
+main: main.o nnet.o opencl_utils.o
 	$(CP) $(CPFLAGS) $^ -o $@ -lm
 
 %.o:%.cpp

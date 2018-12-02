@@ -20,14 +20,14 @@
 class StackingLayer : virtual public Layer {
 public:
     StackingLayer(std::string name, std::vector<int> offsets) : offsets(offsets) {};
-    std::vector<float> forward(std::vector<float> input, unsigned long num_samples, unsigned long num_dims, cl_device_id device, cl_context context);
+    std::vector<float> forward(std::vector<float> input, unsigned long &num_samples, unsigned long &num_dims, cl_device_id device, cl_context context);
 
 private:
     std::vector<int> offsets;
 };
 
 
-std::vector<float> StackingLayer::forward(std::vector<float> input, unsigned long num_samples, unsigned long num_dims, cl_device_id device, cl_context context) {
+std::vector<float> StackingLayer::forward(std::vector<float> input, unsigned long &num_samples, unsigned long &num_dims, cl_device_id device, cl_context context) {
       
     int maxval = offsets[std::max_element(offsets.begin(), offsets.end()) - offsets.begin()];
     int minval = offsets[std::min_element(offsets.begin(), offsets.end()) - offsets.begin()];
@@ -52,6 +52,8 @@ std::vector<float> StackingLayer::forward(std::vector<float> input, unsigned lon
         for (unsigned long y = 0; y < cutted_cols; y++)
             cutted_output[y + x * cutted_cols] = output[y + maxval + abs(minval) + x * cols];
     
+    num_samples = cutted_cols;
+    num_dims = cutted_rows;
     return cutted_output;
 }
 
