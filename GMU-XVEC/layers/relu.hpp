@@ -19,14 +19,9 @@
 class ReLULayer : virtual public Layer {
 public:
     ReLULayer(std::string name) {};
-    float * forward(float *input, unsigned long num_samples, unsigned long num_dims);
+    std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context);
     
 };
-
-
-float * ReLULayer::forward(float *input, unsigned long num_samples, unsigned long num_dims) {
-    return NULL;
-}
 
 
 #endif /* relu_h */

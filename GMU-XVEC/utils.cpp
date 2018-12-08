@@ -9,6 +9,14 @@
 #include <stdio.h>
 #include "utils.hpp"
 
+#define MAC
+
+#ifdef MAC
+#include <OpenCL/cl.h>
+#else
+#include <CL/cl.h>
+#endif
+
 
 std::vector<std::string> split(const std::string &s, char delim) {
     std::stringstream ss(s);
@@ -147,3 +155,4 @@ bool allclose(std::vector<float> v1, std::vector<float> v2, float eps) {
     }
     return true;
 }
+

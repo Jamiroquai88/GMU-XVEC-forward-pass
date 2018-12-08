@@ -7,16 +7,9 @@
 //
 
 #include <stdio.h>
+#include <iostream>
 #include "opencl_utils.hpp"
 
-#define CL_SILENCE_DEPRECATION true
-#define MAC
-
-#ifdef MAC
-#include <OpenCL/cl.h>
-#else
-#include <CL/cl.h>
-#endif
 
 #pragma comment( lib, "OpenCL" )
 
@@ -170,4 +163,21 @@ cl_program build_program(cl_context ctx, cl_device_id dev, const char* filename)
         exit(1);
     }
     return program;
+}
+
+
+cl_kernel compile_kernel(cl_device_id device, cl_context context, std::string src_path, std::string function_name, size_t &max_local_size) {
+    /* Allocate output vector - one element for each work-group */
+    clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(max_local_size), &max_local_size, NULL);
+    
+    cl_program program = build_program(context, device, src_path.c_str());
+    
+    /* Create a kernel for the multiplication function */
+    cl_int err;
+    cl_kernel kernel = clCreateKernel(program, function_name.c_str(), &err);
+    if (err < 0) {
+        std::cerr << getCLError(err) << std::endl;
+        exit(1);
+    }
+    return kernel;
 }

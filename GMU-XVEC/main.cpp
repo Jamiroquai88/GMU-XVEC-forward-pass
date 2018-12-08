@@ -16,6 +16,8 @@
 #include "utils.hpp"
 #include "layers/stacking.hpp"
 #include "layers/dense.hpp"
+#include "layers/relu.hpp"
+
 
 #define CL_SILENCE_DEPRECATION true
 #define MAC
@@ -56,15 +58,25 @@ std::vector<float> test_dense_layer(std::vector<float> input, unsigned long &row
 }
 
 
+std::vector<float> test_relu_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+    ReLULayer layer = ReLULayer("");
+    std::vector<float> output = layer.forward(input, rows, cols, device, context);
+    std::vector<float> ref = loadtxt("tests/ref_relu_layer.txt", rows, cols);
+    assert (allclose(output, ref));
+    return output;
+}
+
+
 bool test(cl_device_id device, cl_context context) {
-    std::vector<float> input = {
-        -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+    std::vector<float> input;
+    for (int i = -10; i < 20; i++)
+        input.push_back(i);
     unsigned long rows = 6;
     unsigned long cols = 5;
     
     input = test_stacking_layer(input, rows, cols, device, context);
     input = test_dense_layer(input, rows, cols, device, context);
+    input = test_relu_layer(input, rows, cols, device, context);
     
     return true;
 }
@@ -116,7 +128,7 @@ int main(int argc, char * argv[]) {
         }
     }
     if (features_path.length() == 0 || nnet_path.length() == 0) {
-        std::cerr << "ERROR: Argument '-i' and '-n' must be specified." << std::endl;
+        std::cerr << "ERROR: Arguments '-i' and '-n' must be specified." << std::endl;
         exit(1);
     }
     

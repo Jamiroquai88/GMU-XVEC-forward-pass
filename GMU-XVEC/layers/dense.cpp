@@ -14,19 +14,8 @@
 
 std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
     size_t max_local_size;
-    /* Allocate output vector - one element for each work-group */
-    clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(max_local_size), &max_local_size, NULL);
-    // TODO - just dummy
-    cl_uint num_groups = max_local_size;
-    cl_program program = build_program(context, device, "layers/dense.cl");
-    
-    /* Create a kernel for the multiplication function */
     cl_int err;
-    cl_kernel dot_kernel = clCreateKernel(program, "dot_product", &err);
-    if (err < 0) {
-        std::cerr << getCLError(err) << std::endl;
-        exit(1);
-    }
+    cl_kernel dot_kernel = compile_kernel(device, context, "layers/dense.cl", "dot_product", max_local_size);
     
     unsigned long linear_rows = linear.size() / cols;
     unsigned long linear_cols = cols;

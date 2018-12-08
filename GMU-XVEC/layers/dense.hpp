@@ -16,15 +16,6 @@
 #include "../nnet.hpp"
 #include "../opencl_utils.hpp"
 
-#define MAC
-
-#ifdef MAC
-    #include <OpenCL/cl.h>
-#else
-    #include <CL/cl.h>
-#endif
-
-
 
 class DenseLayer : virtual public Layer {
 public:

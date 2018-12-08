@@ -25,5 +25,6 @@ const char *getCLError(cl_int err_id);
 /* Create program from a file and compile it */
 // borrowed from https://github.com/mattscar/opencl_dot_product/blob/master/dot_product.c
 cl_program build_program(cl_context ctx, cl_device_id dev, const char* filename);
+cl_kernel compile_kernel(cl_device_id device, cl_context context, std::string src_path, std::string function_name, size_t &max_local_size);
 
 #endif /* opencl_utils_h */
