@@ -106,6 +106,7 @@ bool test(cl_device_id device, cl_context context) {
     input = test_relu_layer(input, rows, cols, device, context);
     input = test_batchnorm_layer(input, rows, cols, device, context);
     
+    std::cerr << "All tests successfully passed." << std::endl;
     return true;
 }
 
@@ -170,8 +171,8 @@ int main(int argc, char * argv[]) {
     }
     
     test(device, context);
-    NNet nnet = NNet(nnet_path);
-    nnet.forward(features_path, device, context);
+//    NNet nnet = NNet(nnet_path);
+//    nnet.forward(features_path, device, context);
  
     return 0;
 }
