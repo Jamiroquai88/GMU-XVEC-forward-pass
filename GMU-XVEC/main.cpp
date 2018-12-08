@@ -40,7 +40,10 @@ std::vector<float> test_stacking_layer(std::vector<float> input, unsigned long &
     std::vector<float> output = layer.forward(input, rows, cols, device, context);
     unsigned long output_rows, output_cols;
     std::vector<float> ref = loadtxt("tests/ref_stacking_layer.txt", output_rows, output_cols);
-    assert (allclose(output, ref));
+    if (!allclose(output, ref)) {
+        std::cerr << "TEST FAIL: tests/ref_stacking_layer.txt" << std::endl;
+        exit(1);
+    }
     return output;
 }
 
@@ -53,7 +56,10 @@ std::vector<float> test_dense_layer(std::vector<float> input, unsigned long &row
     std::vector<float> output = layer.forward(input, rows, cols, device, context);
     unsigned long output_rows, output_cols;
     std::vector<float> ref = loadtxt("tests/ref_dense_layer.txt", output_rows, output_cols);
-    assert (allclose(output, ref));
+    if (!allclose(output, ref)) {
+        std::cerr << "TEST FAIL: tests/ref_dense_layer.txt" << std::endl;
+        exit(1);
+    }
     return output;
 }
 
@@ -62,7 +68,10 @@ std::vector<float> test_relu_layer(std::vector<float> input, unsigned long &rows
     ReLULayer layer = ReLULayer("");
     std::vector<float> output = layer.forward(input, rows, cols, device, context);
     std::vector<float> ref = loadtxt("tests/ref_relu_layer.txt", rows, cols);
-    assert (allclose(output, ref));
+    if (!allclose(output, ref)) {
+        std::cerr << "TEST FAIL: tests/ref_relu_layer.txt" << std::endl;
+        exit(1);
+    }
     return output;
 }
 
