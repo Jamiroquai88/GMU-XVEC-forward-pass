@@ -14,9 +14,11 @@
 
 #include "nnet.hpp"
 #include "utils.hpp"
+#include "opencl_utils.hpp"
 #include "layers/stacking.hpp"
 #include "layers/dense.hpp"
 #include "layers/relu.hpp"
+#include "layers/batchnorm.hpp"
 
 
 #define CL_SILENCE_DEPRECATION true
@@ -76,6 +78,22 @@ std::vector<float> test_relu_layer(std::vector<float> input, unsigned long &rows
 }
 
 
+std::vector<float> test_batchnorm_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+    unsigned long mean_rows, mean_cols, variance_rows, variance_cols;
+    std::vector<float> mean = loadtxt("tests/mean_batchnorm_layer.txt", mean_rows, mean_cols);
+    std::vector<float> variance = loadtxt("tests/variance_batchnorm_layer.txt", variance_rows, variance_cols);
+    float epsilon = 0.0001;
+    BatchNormLayer layer = BatchNormLayer("", mean, variance, epsilon);
+    std::vector<float> output = layer.forward(input, rows, cols, device, context);
+    std::vector<float> ref = loadtxt("tests/ref_batchnorm_layer.txt", rows, cols);
+    if (!allclose(output, ref)) {
+        std::cerr << "TEST FAIL: tests/ref_batchnorm_layer.txt" << std::endl;
+        exit(1);
+    }
+    return output;
+}
+
+
 bool test(cl_device_id device, cl_context context) {
     std::vector<float> input;
     for (int i = -10; i < 20; i++)
@@ -86,6 +104,7 @@ bool test(cl_device_id device, cl_context context) {
     input = test_stacking_layer(input, rows, cols, device, context);
     input = test_dense_layer(input, rows, cols, device, context);
     input = test_relu_layer(input, rows, cols, device, context);
+    input = test_batchnorm_layer(input, rows, cols, device, context);
     
     return true;
 }

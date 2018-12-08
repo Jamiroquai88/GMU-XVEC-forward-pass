@@ -1,5 +1,5 @@
 // borrowed from https://github.com/hughperkins/DeepCL/blob/master/cl/activate.cl
-kernel void activation(const int N, global float *inout) {
+__kernel void activation(const unsigned long N, __global float *inout) {
     const int globalId = get_global_id(0);
     if (globalId >= N) {
         return;

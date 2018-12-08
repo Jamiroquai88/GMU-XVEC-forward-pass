@@ -308,7 +308,7 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
         is_initialized = true;
     }
     if (type == "BatchNormComponent") {
-        layers.push_back(new BatchNormLayer(name, &matrix_attrs["StatsMean"][0], &matrix_attrs["StatsVar"][0], std::stof(node_attrs["Epsilon"])));
+        layers.push_back(new BatchNormLayer(name, matrix_attrs["StatsMean"], matrix_attrs["StatsVar"], std::stof(node_attrs["Epsilon"])));
         layers_types.push_back("BatchNormComponent");
         is_initialized = true;
     }

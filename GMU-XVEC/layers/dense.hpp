@@ -14,7 +14,6 @@
 #include <vector>
 
 #include "../nnet.hpp"
-#include "../opencl_utils.hpp"
 
 
 class DenseLayer : virtual public Layer {

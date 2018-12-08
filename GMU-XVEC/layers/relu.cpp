@@ -9,26 +9,26 @@
 #include <stdio.h>
 
 #include "relu.hpp"
+#include "../opencl_utils.hpp"
 
 
-std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+std::vector<float> ReLULayer::forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
     size_t max_local_size;
     cl_int err;
-    cl_kernel dot_kernel = compile_kernel(device, context, "layers/dense.cl", "dot_product", max_local_size);
+    cl_kernel activation_kernel = compile_kernel(device, context, "layers/relu.cl", "activation", max_local_size);
     
     std::vector<float> output(rows * cols, 0.0f);
     unsigned long output_size = output.size();
     
     // initialize input buffer
-    cl_mem input_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+    cl_mem input_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
                                          sizeof(float) * output_size, &input[0], &err);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
     
-    // initialize output buffer
-    cl_mem output_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * output_size, NULL, &err);
+    // initialize queue
     cl_command_queue queue = clCreateCommandQueue(context, device, 0, &err);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
@@ -36,8 +36,8 @@ std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsign
     }
     
     /* Create arguments for activation kernel */
-    err = clSetKernelArg(dot_kernel, 0, sizeof(cl_mem), &input_buffer);
-    err |= clSetKernelArg(dot_kernel, 1, sizeof(cl_mem), &output_buffer);
+    err = clSetKernelArg(activation_kernel, 0, sizeof(unsigned long), &output_size);
+    err |= clSetKernelArg(activation_kernel, 1, sizeof(cl_mem), &input_buffer);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
@@ -45,8 +45,8 @@ std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsign
     
     /* Enqueue multiplication kernel */
     cl_event prof_event;
-    size_t global_size = output_size;
-    err = clEnqueueNDRangeKernel(queue, dot_kernel, 1, NULL, &global_size,
+    size_t global_size = max_local_size * 4;
+    err = clEnqueueNDRangeKernel(queue, activation_kernel, 1, NULL, &global_size,
                                  &max_local_size, 0, NULL, &prof_event);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
@@ -54,7 +54,7 @@ std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsign
     }
     
     /* Read output buffer */
-    err = clEnqueueReadBuffer(queue, output_buffer, CL_TRUE, 0, sizeof(float) * output_size, &output[0], 0, NULL, NULL);
+    err = clEnqueueReadBuffer(queue, input_buffer, CL_TRUE, 0, sizeof(float) * output_size, &output[0], 0, NULL, NULL);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);

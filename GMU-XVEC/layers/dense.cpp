@@ -10,6 +10,7 @@
 
 #include "dense.hpp"
 #include "../utils.hpp"
+#include "../opencl_utils.hpp"
 
 
 std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
@@ -104,6 +105,7 @@ std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &
     //                                   num_groups * sizeof(float), NULL, &err);
     //
     //
-    
+    rows = output_rows;
+    cols = output_cols;
     return output;
 }
