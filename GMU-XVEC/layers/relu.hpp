@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "../nnet.hpp"
+#include "../opencl_utils.hpp"
 
 
 class ReLULayer : virtual public Layer {

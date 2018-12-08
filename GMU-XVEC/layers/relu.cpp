@@ -9,7 +9,6 @@
 #include <stdio.h>
 
 #include "relu.hpp"
-#include "../opencl_utils.hpp"
 
 
 std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {

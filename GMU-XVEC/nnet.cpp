@@ -349,7 +349,10 @@ float * NNet::forward(std::string fea_path, cl_device_id device, cl_context cont
             output = layer2->forward(input, rows, cols, device, context);
             savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
         }
-        
+        if (type == "RectifiedLinearComponent") {
+            ReLULayer *relu_layer = dynamic_cast<ReLULayer*>(layers[i]);
+            output = relu_layer->forward(input, rows, cols, device, context);
+        }
     }
     return NULL;
 }
