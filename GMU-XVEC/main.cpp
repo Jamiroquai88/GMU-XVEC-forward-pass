@@ -13,6 +13,9 @@
 #include <string>
 
 #include "nnet.hpp"
+#include "utils.hpp"
+#include "layers/stacking.hpp"
+#include "layers/dense.hpp"
 
 #define CL_SILENCE_DEPRECATION true
 #define MAC
@@ -22,6 +25,50 @@
 #else
     #include <CL/cl.h>
 #endif
+
+
+std::vector<float> test_stacking_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+    std::vector<int> offsets;
+    offsets.push_back(-2);
+    offsets.push_back(-1);
+    offsets.push_back(0);
+    offsets.push_back(1);
+    offsets.push_back(2);
+    StackingLayer layer = StackingLayer("test", offsets);
+    std::vector<float> output = layer.forward(input, rows, cols, device, context);
+    unsigned long output_rows, output_cols;
+    std::vector<float> ref = loadtxt("tests/ref_stacking_layer.txt", output_rows, output_cols);
+    assert (allclose(output, ref));
+    return output;
+}
+
+
+std::vector<float> test_dense_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+    unsigned long linear_rows, linear_cols;
+    std::vector<float> linear = loadtxt("tests/linear_dense_layer.txt", linear_rows, linear_cols);
+    std::vector<float> bias = {0.5, 1.5, -1.5, -0.5};
+    DenseLayer layer = DenseLayer("", linear, bias);
+    std::vector<float> output = layer.forward(input, rows, cols, device, context);
+    unsigned long output_rows, output_cols;
+    std::vector<float> ref = loadtxt("tests/ref_dense_layer.txt", output_rows, output_cols);
+    assert (allclose(output, ref));
+    return output;
+}
+
+
+bool test(cl_device_id device, cl_context context) {
+    std::vector<float> input = {
+        -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+    unsigned long rows = 6;
+    unsigned long cols = 5;
+    
+    input = test_stacking_layer(input, rows, cols, device, context);
+    input = test_dense_layer(input, rows, cols, device, context);
+    
+    return true;
+}
+
 
 
 /* Find a GPU or CPU associated with the first available platform */
@@ -82,6 +129,7 @@ int main(int argc, char * argv[]) {
         exit(1);
     }
     
+    test(device, context);
     NNet nnet = NNet(nnet_path);
     nnet.forward(features_path, device, context);
  

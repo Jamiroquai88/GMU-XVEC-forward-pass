@@ -330,9 +330,10 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
 
 
 float * NNet::forward(std::string fea_path, cl_device_id device, cl_context context) {
-    unsigned long num_samples;
-    unsigned long num_dims;
-    std::vector<float> features = read_fea(fea_path, num_samples, num_dims);
+    unsigned long rows;
+    unsigned long cols;
+    std::vector<float> features = loadtxt(fea_path, rows, cols);
+    savetxt("/tmp/cpp_fea.txt", features, rows, cols);
     std::vector<float> input = features;
     std::vector<float> output;
     
@@ -341,10 +342,12 @@ float * NNet::forward(std::string fea_path, cl_device_id device, cl_context cont
         type = layers_types[i];
         if (type == "NaturalGradientAffineComponent") {
             StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
-            output = layer->forward(input, num_samples, num_dims, device, context);
+            output = layer->forward(input, rows, cols, device, context);
+            savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
             input = output;
             DenseLayer *layer2 = dynamic_cast<DenseLayer*>(layers[++i]);
-            output = layer2->forward(input, num_samples, num_dims, device, context);
+            output = layer2->forward(input, rows, cols, device, context);
+            savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
         }
         
     }
