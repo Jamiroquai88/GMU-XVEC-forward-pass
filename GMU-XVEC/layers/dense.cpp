@@ -34,10 +34,10 @@ std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &
     std::vector<float> output(output_rows * output_cols, 0.0f);
     
     for (unsigned long x = 0; x < output_rows; x++) {
-//        float *p = &input[0] + x * cols;
-//        for (int i=0; i < cols; i++)
-//            std::cout << p[i] << " ";
-//        std::cout << std::endl;
+        float *p = &input[0] + x * cols;
+        for (int i=0; i < cols; i++)
+            std::cout << p[i] << " ";
+        std::cout << std::endl;
         cl_mem input_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
                                              sizeof(float) * cols, &input[0] + x * cols, &err);
         if (err < 0) {
@@ -45,10 +45,10 @@ std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &
             exit(1);
         }
         for (unsigned long y = 0; y < output_cols; y++) {
-//            float *p = &linear[0] + y * cols;
-//            for (int i=0; i < cols; i++)
-//                std::cout << p[i] << " ";
-//            std::cout << std::endl;
+            float *p = &linear[0] + y * cols;
+            for (int i=0; i < cols; i++)
+                std::cout << p[i] << " ";
+            std::cout << std::endl;
             cl_mem linear_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
                                                   sizeof(float) * cols, &linear[0] + y * cols, &err);
             if (err < 0) {
