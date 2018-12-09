@@ -297,11 +297,12 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
     bool is_initialized = false;
     
     if (type == "NaturalGradientAffineComponent") {
-        if (node_attrs.find("stacking") != node_attrs.end())
+        if (node_attrs.find("stacking") != node_attrs.end()) {
             layers.push_back(new StackingLayer(name, str2ints(node_attrs["stacking"])));
+            layers_types.push_back("NaturalGradientAffineComponent StackingLayer");
+        }
         layers.push_back(new DenseLayer(name, matrix_attrs["LinearParams"], matrix_attrs["BiasParams"]));
-        layers_types.push_back("NaturalGradientAffineComponent");
-        layers_types.push_back("NaturalGradientAffineComponent");
+        layers_types.push_back("NaturalGradientAffineComponent DenseLayer");
         is_initialized = true;
     }
     if (type == "RectifiedLinearComponent") {
@@ -324,8 +325,10 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
         layers_types.push_back("StatisticsPoolingComponent");
         is_initialized = true;
     }
-    if (type == "output-node")
+    if (type == "output-node") {
         is_initialized = true;
+        layers_types.push_back("output-node");
+    }
     
     assert(is_initialized);
 }
@@ -344,12 +347,16 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     for (unsigned int i = 0; i < layers.size(); i++) {
         type = layers_types[i];
         std::cout << "Processing layer " << i << " with type: " << type << std::endl;
-        if (type == "NaturalGradientAffineComponent") {
-            StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
-            output = layer->forward(input, rows, cols, device, context);
-            savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
-            input = output;
-            DenseLayer *layer2 = dynamic_cast<DenseLayer*>(layers[++i]);
+        if (startswith(type, "NaturalGradientAffineComponent")) {
+            if (type == "NaturalGradientAffineComponent StackingLayer") {
+                StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
+                output = layer->forward(input, rows, cols, device, context);
+                savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
+                input = output;
+                i++;
+                std::cout << "Processing layer " << i << " with type: " << layers_types[i] << std::endl;
+            }
+            DenseLayer *layer2 = dynamic_cast<DenseLayer*>(layers[i]);
             output = layer2->forward(input, rows, cols, device, context);
         }
         if (type == "RectifiedLinearComponent") {

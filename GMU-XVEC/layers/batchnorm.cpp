@@ -15,7 +15,7 @@ std::vector<float> BatchNormLayer::forward(std::vector<float> input, unsigned lo
     size_t max_local_size;
     cl_int err;
     cl_program program;
-    cl_kernel activation_kernel = compile_kernel(device, context, "layers/batchnorm.cl", "batchnorm", max_local_size, program);
+    cl_kernel batchnorm_kernel = compile_kernel(device, context, "layers/batchnorm.cl", "batchnorm", max_local_size, program);
     
     std::vector<float> output(rows * cols, 0.0f);
     
@@ -53,11 +53,11 @@ std::vector<float> BatchNormLayer::forward(std::vector<float> input, unsigned lo
         }
     
         /* Create arguments for activation kernel */
-        err = clSetKernelArg(activation_kernel, 0, sizeof(unsigned long), &cols);
-        err |= clSetKernelArg(activation_kernel, 1, sizeof(cl_mem), &mean_buffer);
-        err |= clSetKernelArg(activation_kernel, 2, sizeof(cl_mem), &variance_buffer);
-        err |= clSetKernelArg(activation_kernel, 3, sizeof(cl_mem), &epsilon_buffer);
-        err |= clSetKernelArg(activation_kernel, 4, sizeof(cl_mem), &input_buffer);
+        err = clSetKernelArg(batchnorm_kernel, 0, sizeof(unsigned long), &cols);
+        err |= clSetKernelArg(batchnorm_kernel, 1, sizeof(cl_mem), &mean_buffer);
+        err |= clSetKernelArg(batchnorm_kernel, 2, sizeof(cl_mem), &variance_buffer);
+        err |= clSetKernelArg(batchnorm_kernel, 3, sizeof(cl_mem), &epsilon_buffer);
+        err |= clSetKernelArg(batchnorm_kernel, 4, sizeof(cl_mem), &input_buffer);
         if (err < 0) {
             std::cerr << getCLError(err) << std::endl;
             exit(1);
@@ -66,7 +66,7 @@ std::vector<float> BatchNormLayer::forward(std::vector<float> input, unsigned lo
         /* Enqueue multiplication kernel */
         cl_event prof_event;
         size_t global_size = get_global_group_size(cols, max_local_size);
-        err = clEnqueueNDRangeKernel(queue, activation_kernel, 1, NULL, &global_size,
+        err = clEnqueueNDRangeKernel(queue, batchnorm_kernel, 1, NULL, &global_size,
                                      &max_local_size, 0, NULL, &prof_event);
         if (err < 0) {
             std::cerr << getCLError(err) << std::endl;
@@ -79,7 +79,13 @@ std::vector<float> BatchNormLayer::forward(std::vector<float> input, unsigned lo
             std::cerr << getCLError(err) << std::endl;
             exit(1);
         }
+        clReleaseMemObject(input_buffer);
     }
-    
+    clReleaseCommandQueue(queue);
+    clReleaseMemObject(mean_buffer);
+    clReleaseMemObject(variance_buffer);
+    clReleaseMemObject(epsilon_buffer);
+    clReleaseKernel(batchnorm_kernel);
+    clReleaseProgram(program);
     return output;
 }
