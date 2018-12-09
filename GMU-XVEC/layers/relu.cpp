@@ -15,7 +15,8 @@
 std::vector<float> ReLULayer::forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
     size_t max_local_size;
     cl_int err;
-    cl_kernel activation_kernel = compile_kernel(device, context, "layers/relu.cl", "activation", max_local_size);
+    cl_program program;
+    cl_kernel activation_kernel = compile_kernel(device, context, "layers/relu.cl", "activation", max_local_size, program);
     
     std::vector<float> output(rows * cols, 0.0f);
     unsigned long output_size = output.size();
@@ -45,7 +46,7 @@ std::vector<float> ReLULayer::forward(std::vector<float> input, unsigned long &r
     
     /* Enqueue multiplication kernel */
     cl_event prof_event;
-    size_t global_size = max_local_size * 4;
+    size_t global_size = max_local_size;
     err = clEnqueueNDRangeKernel(queue, activation_kernel, 1, NULL, &global_size,
                                  &max_local_size, 0, NULL, &prof_event);
     if (err < 0) {

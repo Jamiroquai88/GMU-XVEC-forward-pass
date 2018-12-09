@@ -9,6 +9,16 @@
 /* Begin PBXBuildFile section */
 		490708BB21AF020B00C27C38 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 490708BA21AF020B00C27C38 /* main.cpp */; };
 		490708C321AF060200C27C38 /* nnet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 490708C121AF060200C27C38 /* nnet.cpp */; };
+		492088BA21B4465E005EAEFE /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 492088B921B4465E005EAEFE /* OpenCL.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		492088C021B45467005EAEFE /* dense.cl in Sources */ = {isa = PBXBuildFile; fileRef = 492088BF21B45467005EAEFE /* dense.cl */; };
+		492088C221B45DE2005EAEFE /* opencl_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492088C121B45DE2005EAEFE /* opencl_utils.cpp */; };
+		49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8B21BBDA3700335482 /* stacking.cpp */; };
+		49B78C8E21BBDC9500335482 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8D21BBDC9500335482 /* utils.cpp */; };
+		49B78C9021BBF32C00335482 /* dense.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8F21BBF32C00335482 /* dense.cpp */; };
+		49B78C9221BC211C00335482 /* relu.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9121BC211C00335482 /* relu.cl */; };
+		49B78C9421BC219300335482 /* relu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9321BC219300335482 /* relu.cpp */; };
+		49B78C9621BC440000335482 /* batchnorm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9521BC440000335482 /* batchnorm.cpp */; };
+		49B78C9821BC496000335482 /* batchnorm.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9721BC496000335482 /* batchnorm.cl */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +39,23 @@
 		490708C121AF060200C27C38 /* nnet.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = nnet.cpp; sourceTree = "<group>"; };
 		490708C221AF060200C27C38 /* nnet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = nnet.hpp; sourceTree = "<group>"; };
 		490708C421AF0E1700C27C38 /* utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
+		492088AA21B2D5DE005EAEFE /* stacking.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = stacking.hpp; sourceTree = "<group>"; };
+		492088AF21B2E47B005EAEFE /* dense.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = dense.hpp; sourceTree = "<group>"; };
+		492088B021B2E834005EAEFE /* relu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = relu.hpp; sourceTree = "<group>"; };
+		492088B221B2E8F0005EAEFE /* batchnorm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = batchnorm.hpp; sourceTree = "<group>"; };
+		492088B321B2EA63005EAEFE /* statistics_extraction.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = statistics_extraction.hpp; sourceTree = "<group>"; };
+		492088B421B2EA77005EAEFE /* statistics_pooling.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = statistics_pooling.hpp; sourceTree = "<group>"; };
+		492088B921B4465E005EAEFE /* OpenCL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCL.framework; path = System/Library/Frameworks/OpenCL.framework; sourceTree = SDKROOT; };
+		492088BB21B4500F005EAEFE /* opencl_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = opencl_utils.hpp; sourceTree = "<group>"; };
+		492088BF21B45467005EAEFE /* dense.cl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.opencl; path = dense.cl; sourceTree = "<group>"; };
+		492088C121B45DE2005EAEFE /* opencl_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = opencl_utils.cpp; sourceTree = "<group>"; };
+		49B78C8B21BBDA3700335482 /* stacking.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stacking.cpp; sourceTree = "<group>"; };
+		49B78C8D21BBDC9500335482 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
+		49B78C8F21BBF32C00335482 /* dense.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dense.cpp; sourceTree = "<group>"; };
+		49B78C9121BC211C00335482 /* relu.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = relu.cl; sourceTree = "<group>"; };
+		49B78C9321BC219300335482 /* relu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = relu.cpp; sourceTree = "<group>"; };
+		49B78C9521BC440000335482 /* batchnorm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = batchnorm.cpp; sourceTree = "<group>"; };
+		49B78C9721BC496000335482 /* batchnorm.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = batchnorm.cl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				492088BA21B4465E005EAEFE /* OpenCL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +75,7 @@
 			children = (
 				490708B921AF020B00C27C38 /* GMU-XVEC */,
 				490708B821AF020B00C27C38 /* Products */,
+				492088B821B4465D005EAEFE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -61,20 +90,44 @@
 		490708B921AF020B00C27C38 /* GMU-XVEC */ = {
 			isa = PBXGroup;
 			children = (
-				492088A721B2D2B2005EAEFE /* layers */,
+				492088AE21B2E131005EAEFE /* layers */,
 				490708BA21AF020B00C27C38 /* main.cpp */,
 				490708C121AF060200C27C38 /* nnet.cpp */,
 				490708C221AF060200C27C38 /* nnet.hpp */,
 				490708C421AF0E1700C27C38 /* utils.hpp */,
+				492088BB21B4500F005EAEFE /* opencl_utils.hpp */,
+				492088C121B45DE2005EAEFE /* opencl_utils.cpp */,
+				49B78C8D21BBDC9500335482 /* utils.cpp */,
 			);
 			path = "GMU-XVEC";
 			sourceTree = "<group>";
 		};
-		492088A721B2D2B2005EAEFE /* layers */ = {
+		492088AE21B2E131005EAEFE /* layers */ = {
 			isa = PBXGroup;
 			children = (
+				492088AA21B2D5DE005EAEFE /* stacking.hpp */,
+				49B78C8B21BBDA3700335482 /* stacking.cpp */,
+				492088AF21B2E47B005EAEFE /* dense.hpp */,
+				49B78C8F21BBF32C00335482 /* dense.cpp */,
+				492088BF21B45467005EAEFE /* dense.cl */,
+				492088B021B2E834005EAEFE /* relu.hpp */,
+				49B78C9321BC219300335482 /* relu.cpp */,
+				49B78C9121BC211C00335482 /* relu.cl */,
+				492088B221B2E8F0005EAEFE /* batchnorm.hpp */,
+				49B78C9521BC440000335482 /* batchnorm.cpp */,
+				49B78C9721BC496000335482 /* batchnorm.cl */,
+				492088B321B2EA63005EAEFE /* statistics_extraction.hpp */,
+				492088B421B2EA77005EAEFE /* statistics_pooling.hpp */,
 			);
 			path = layers;
+			sourceTree = "<group>";
+		};
+		492088B821B4465D005EAEFE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				492088B921B4465E005EAEFE /* OpenCL.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -133,6 +186,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49B78C9021BBF32C00335482 /* dense.cpp in Sources */,
+				492088C221B45DE2005EAEFE /* opencl_utils.cpp in Sources */,
+				49B78C9821BC496000335482 /* batchnorm.cl in Sources */,
+				49B78C9421BC219300335482 /* relu.cpp in Sources */,
+				492088C021B45467005EAEFE /* dense.cl in Sources */,
+				49B78C9621BC440000335482 /* batchnorm.cpp in Sources */,
+				49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */,
+				49B78C9221BC211C00335482 /* relu.cl in Sources */,
+				49B78C8E21BBDC9500335482 /* utils.cpp in Sources */,
 				490708C321AF060200C27C38 /* nnet.cpp in Sources */,
 				490708BB21AF020B00C27C38 /* main.cpp in Sources */,
 			);
@@ -257,6 +319,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					/opt/local/include,
 					/usr/local/include/boost/,
@@ -278,6 +341,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					/opt/local/include,
 					/usr/local/include/boost/,

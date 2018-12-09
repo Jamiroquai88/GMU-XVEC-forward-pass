@@ -180,9 +180,10 @@ int main(int argc, char * argv[]) {
         exit(1);
     }
     
-    test(device, context);
+//    test(device, context);
     NNet nnet = NNet(nnet_path);
     nnet.forward(features_path, device, context);
  
+    clReleaseContext(context);
     return 0;
 }

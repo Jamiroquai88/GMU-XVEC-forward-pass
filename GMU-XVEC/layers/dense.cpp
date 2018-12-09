@@ -16,17 +16,18 @@
 std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
     size_t max_local_size;
     cl_int err;
-    cl_kernel dot_kernel = compile_kernel(device, context, "layers/dense.cl", "dot_product", max_local_size);
+    cl_program program;
+    cl_kernel dot_kernel = compile_kernel(device, context, "layers/dense.cl", "dot_product", max_local_size, program);
     
     unsigned long linear_rows = linear.size() / cols;
     unsigned long linear_cols = cols;
     // transpose matrix if needed because of dot product
-    if (!is_transposed) {
-        std::vector<float> transposed(linear.size());
-        transpose(&linear[0], &transposed[0], linear_cols, linear_rows);
-        linear = transposed;
-        is_transposed = true;
-    }
+//    if (!is_transposed) {
+//        std::vector<float> transposed(linear.size());
+//        transpose(&linear[0], &transposed[0], linear_cols, linear_rows);
+//        linear = transposed;
+//        is_transposed = true;
+//    }
     
     unsigned long output_rows = rows;
     unsigned long output_cols = linear_rows;
@@ -89,7 +90,13 @@ std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &
                 exit(1);
             }
             output[x * output_cols + y] += bias[y];
+            
+            // release memory objects
+            clReleaseMemObject(linear_buffer);
+            clReleaseMemObject(output_buffer);
+            clReleaseCommandQueue(queue);
         }
+        clReleaseMemObject(input_buffer);
     }
     
     /* Read output buffer */
@@ -105,6 +112,8 @@ std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &
     //                                   num_groups * sizeof(float), NULL, &err);
     //
     //
+    clReleaseKernel(dot_kernel);
+    clReleaseProgram(program);
     rows = output_rows;
     cols = output_cols;
     return output;

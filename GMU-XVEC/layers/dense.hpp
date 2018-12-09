@@ -18,13 +18,12 @@
 
 class DenseLayer : virtual public Layer {
 public:
-    DenseLayer(std::string name, std::vector<float> linear, std::vector<float> bias) : linear(linear), bias(bias), is_transposed(false) {};
+    DenseLayer(std::string name, std::vector<float> linear, std::vector<float> bias) : linear(linear), bias(bias) {};
     std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context);
     
 private:
     std::vector<float> linear;
     std::vector<float> bias;
-    bool is_transposed;
 };
 
 
