@@ -46,7 +46,7 @@ std::vector<float> ReLULayer::forward(std::vector<float> input, unsigned long &r
     
     /* Enqueue multiplication kernel */
     cl_event prof_event;
-    size_t global_size = max_local_size;
+    size_t global_size = get_global_group_size(output_size, max_local_size);
     err = clEnqueueNDRangeKernel(queue, activation_kernel, 1, NULL, &global_size,
                                  &max_local_size, 0, NULL, &prof_event);
     if (err < 0) {
@@ -60,6 +60,10 @@ std::vector<float> ReLULayer::forward(std::vector<float> input, unsigned long &r
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
-    
+    clReleaseMemObject(input_buffer);
+    clReleaseCommandQueue(queue);
+    clReleaseEvent(prof_event);
+    clReleaseKernel(activation_kernel);
+    clReleaseProgram(program);
     return output;
 }

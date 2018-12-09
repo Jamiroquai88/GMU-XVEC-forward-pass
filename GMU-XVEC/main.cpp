@@ -181,8 +181,8 @@ int main(int argc, char * argv[]) {
     }
     
     test(device, context);
-//    NNet nnet = NNet(nnet_path);
-//    nnet.forward(features_path, device, context);
+    NNet nnet = NNet(nnet_path);
+    nnet.forward(features_path, device, context);
  
     clReleaseContext(context);
     return 0;

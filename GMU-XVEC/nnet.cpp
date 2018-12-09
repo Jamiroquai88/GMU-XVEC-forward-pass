@@ -301,6 +301,7 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
             layers.push_back(new StackingLayer(name, str2ints(node_attrs["stacking"])));
         layers.push_back(new DenseLayer(name, matrix_attrs["LinearParams"], matrix_attrs["BiasParams"]));
         layers_types.push_back("NaturalGradientAffineComponent");
+        layers_types.push_back("NaturalGradientAffineComponent");
         is_initialized = true;
     }
     if (type == "RectifiedLinearComponent") {
@@ -330,7 +331,7 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
 }
 
 
-float * NNet::forward(std::string fea_path, cl_device_id device, cl_context context) {
+std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_context context) {
     std::cout << "Executing forward pass of neural net." << std::endl;
     unsigned long rows;
     unsigned long cols;
@@ -359,8 +360,19 @@ float * NNet::forward(std::string fea_path, cl_device_id device, cl_context cont
             BatchNormLayer *batchnorm_layer = dynamic_cast<BatchNormLayer*>(layers[i]);
             output = batchnorm_layer->forward(input, rows, cols, device, context);
         }
+        if (type == "StatisticsExtractionComponent") {
+            std::cerr << "NOT IMPLEMENTED ERROR" << std::endl;
+            exit(1);
+        }
+        if (type == "StatisticsPoolingComponent") {
+            std::cerr << "NOT IMPLEMENTED ERROR" << std::endl;
+            exit(1);
+        }
+        if (type == "output-node")
+            break;
+        
         savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
         input = output;
     }
-    return NULL;
+    return output;
 }

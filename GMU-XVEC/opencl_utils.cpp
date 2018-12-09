@@ -8,6 +8,8 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <math.h>
+
 #include "opencl_utils.hpp"
 
 
@@ -180,4 +182,14 @@ cl_kernel compile_kernel(cl_device_id device, cl_context context, std::string sr
         exit(1);
     }
     return kernel;
+}
+
+
+size_t get_global_group_size(size_t array_size, size_t local_size) {
+    if (array_size <= local_size) {
+        return local_size;
+    }
+    else {
+        return pow(2, ceil(log(array_size)/log(2)));
+    }
 }

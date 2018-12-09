@@ -34,7 +34,7 @@ public:
 class NNet {
 public:
     NNet(std::string nnet_path);
-    float * forward(std::string fea_path, cl_device_id device, cl_context context);
+    std::vector<float> forward(std::string fea_path, cl_device_id device, cl_context context);
     
 private:
     std::vector<Layer*> layers;
