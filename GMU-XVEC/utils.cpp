@@ -146,6 +146,7 @@ bool allclose(std::vector<float> v1, std::vector<float> v2, float eps) {
     if (v1.size() == v2.size()) {
         for (unsigned long i = 0; i < v1.size(); i++) {
             if (abs(v1[i] - v2[i]) > eps) {
+                std::cerr << "Absolute difference between " << v1[i] << " and " << v2[i] << " bigger than " << eps << std::endl;
                 return false;
             }
         }
