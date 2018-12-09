@@ -19,6 +19,8 @@
 		49B78C9421BC219300335482 /* relu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9321BC219300335482 /* relu.cpp */; };
 		49B78C9621BC440000335482 /* batchnorm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9521BC440000335482 /* batchnorm.cpp */; };
 		49B78C9821BC496000335482 /* batchnorm.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9721BC496000335482 /* batchnorm.cl */; };
+		49B78C9A21BD98A700335482 /* statistics_extraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9921BD98A700335482 /* statistics_extraction.cpp */; };
+		49B78C9E21BDA4FC00335482 /* statistics_pooling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9D21BDA4FC00335482 /* statistics_pooling.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -56,6 +58,8 @@
 		49B78C9321BC219300335482 /* relu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = relu.cpp; sourceTree = "<group>"; };
 		49B78C9521BC440000335482 /* batchnorm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = batchnorm.cpp; sourceTree = "<group>"; };
 		49B78C9721BC496000335482 /* batchnorm.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = batchnorm.cl; sourceTree = "<group>"; };
+		49B78C9921BD98A700335482 /* statistics_extraction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = statistics_extraction.cpp; sourceTree = "<group>"; };
+		49B78C9D21BDA4FC00335482 /* statistics_pooling.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = statistics_pooling.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,7 +121,9 @@
 				49B78C9521BC440000335482 /* batchnorm.cpp */,
 				49B78C9721BC496000335482 /* batchnorm.cl */,
 				492088B321B2EA63005EAEFE /* statistics_extraction.hpp */,
+				49B78C9921BD98A700335482 /* statistics_extraction.cpp */,
 				492088B421B2EA77005EAEFE /* statistics_pooling.hpp */,
+				49B78C9D21BDA4FC00335482 /* statistics_pooling.cpp */,
 			);
 			path = layers;
 			sourceTree = "<group>";
@@ -192,9 +198,11 @@
 				49B78C9421BC219300335482 /* relu.cpp in Sources */,
 				492088C021B45467005EAEFE /* dense.cl in Sources */,
 				49B78C9621BC440000335482 /* batchnorm.cpp in Sources */,
+				49B78C9E21BDA4FC00335482 /* statistics_pooling.cpp in Sources */,
 				49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */,
 				49B78C9221BC211C00335482 /* relu.cl in Sources */,
 				49B78C8E21BBDC9500335482 /* utils.cpp in Sources */,
+				49B78C9A21BD98A700335482 /* statistics_extraction.cpp in Sources */,
 				490708C321AF060200C27C38 /* nnet.cpp in Sources */,
 				490708BB21AF020B00C27C38 /* main.cpp in Sources */,
 			);

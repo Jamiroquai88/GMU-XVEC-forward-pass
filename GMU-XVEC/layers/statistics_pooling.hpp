@@ -20,7 +20,7 @@
 class StatisticsPoolingLayer : virtual public Layer {
 public:
     StatisticsPoolingLayer(std::string name, int input_dim, bool output_stddevs, int left_context, int right_context, float variance_floor) : input_dim(input_dim), output_stddevs(output_stddevs), left_context(left_context), right_context(right_context), variance_floor(variance_floor) {};
-    float * forward(float *input, unsigned long num_samples, unsigned long num_dims);
+    std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) ;
     
 private:
     int input_dim;
@@ -29,11 +29,6 @@ private:
     int right_context;
     float variance_floor;
 };
-
-
-float * StatisticsPoolingLayer::forward(float *input, unsigned long num_samples, unsigned long num_dims) {
-    return NULL;
-}
 
 
 #endif /* statistics_pooling_h */

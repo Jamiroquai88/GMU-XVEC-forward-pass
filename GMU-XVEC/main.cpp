@@ -19,6 +19,7 @@
 #include "layers/dense.hpp"
 #include "layers/relu.hpp"
 #include "layers/batchnorm.hpp"
+#include "layers/statistics_extraction.hpp"
 
 #define MAC
 #define CL_SILENCE_DEPRECATION true
@@ -93,6 +94,34 @@ std::vector<float> test_batchnorm_layer(std::vector<float> input, unsigned long 
 }
 
 
+std::vector<float> test_statistics_extraction_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+    StatisticsExtractionLayer layer = StatisticsExtractionLayer("", true);
+    cols = rows * cols;
+    rows = 1;
+    std::vector<float> output = layer.forward(input, rows, cols, device, context);
+    std::vector<float> ref = loadtxt("tests/ref_statistics_extraction_layer.txt", rows, cols);
+    if (!allclose(output, ref)) {
+        std::cerr << "TEST FAIL: tests/ref_statistics_extraction_layer.txt" << std::endl;
+        exit(1);
+    }
+    return output;
+}
+
+
+std::vector<float> test_statistics_pooling_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+    StatisticsExtractionLayer layer = StatisticsExtractionLayer("", true);
+    cols = rows * cols;
+    rows = 1;
+    std::vector<float> output = layer.forward(input, rows, cols, device, context);
+    std::vector<float> ref = loadtxt("tests/ref_statistics_extraction_layer.txt", rows, cols);
+    if (!allclose(output, ref)) {
+        std::cerr << "TEST FAIL: tests/ref_statistics_extraction_layer.txt" << std::endl;
+        exit(1);
+    }
+    return output;
+}
+
+
 bool test(cl_device_id device, cl_context context) {
     std::vector<float> input;
     for (int i = -10; i < 20; i++)
@@ -104,6 +133,7 @@ bool test(cl_device_id device, cl_context context) {
     input = test_dense_layer(input, rows, cols, device, context);
     input = test_relu_layer(input, rows, cols, device, context);
     input = test_batchnorm_layer(input, rows, cols, device, context);
+    input = test_statistics_extraction_layer(input, rows, cols, device, context);
     
     std::cerr << "All tests successfully passed." << std::endl;
     return true;
