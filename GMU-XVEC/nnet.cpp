@@ -26,6 +26,7 @@
 
 
 NNet::NNet(std::string nnet_path) {
+    std::cout << "Parsing neural net config from file " << nnet_path << "." << std::endl;
     std::string line;
     std::vector<std::string> lines;
     std::ifstream infile(nnet_path);
@@ -68,9 +69,9 @@ NNet::NNet(std::string nnet_path) {
                 std::string type = line_split[0];
                 line_split.erase(line_split.begin());
                 std::unordered_map<std::string, std::string> node = ParseNodeAttributes(line_split, type);
-                for (auto x : node)
-                    std::cout << x.first << ": " << x.second << std::endl;
-                std::cout << std::endl << std::endl;
+//                for (auto x : node)
+//                    std::cout << x.first << ": " << x.second << std::endl;
+//                std::cout << std::endl << std::endl;
                 std::string node_name = node["name"];
                 
                 // add the current node as output of its input node (both ways reference)
@@ -143,13 +144,13 @@ NNet::NNet(std::string nnet_path) {
             num_input_nodes++;
             input_node = node.second;
         }
-        std::cout << node.first << std::endl;
-        for (auto x : node.second) {
-            std::cout << "  " << x.first << ": " << x.second << std::endl;
-        }
-        for (auto x : nodes_matrices[node.first]) {
-            std::cout << "  " << x.first << ": " << x.second.size() << std::endl;
-        }
+//        std::cout << node.first << std::endl;
+//        for (auto x : node.second) {
+//            std::cout << "  " << x.first << ": " << x.second << std::endl;
+//        }
+//        for (auto x : nodes_matrices[node.first]) {
+//            std::cout << "  " << x.first << ": " << x.second.size() << std::endl;
+//        }
     }
     assert(num_input_nodes == 1);
     
@@ -159,7 +160,7 @@ NNet::NNet(std::string nnet_path) {
         input_node_matrices = nodes_matrices[input_node["component"]];
         InitLayersFromNode(input_node, input_node_matrices);
     }
-    
+    std::cout << "Parsing of neural net config done." << std::endl;
 }
 
 
@@ -330,6 +331,7 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
 
 
 float * NNet::forward(std::string fea_path, cl_device_id device, cl_context context) {
+    std::cout << "Executing forward pass of neural net." << std::endl;
     unsigned long rows;
     unsigned long cols;
     std::vector<float> features = loadtxt(fea_path, rows, cols);
@@ -340,6 +342,7 @@ float * NNet::forward(std::string fea_path, cl_device_id device, cl_context cont
     std::string type;
     for (unsigned int i = 0; i < layers.size(); i++) {
         type = layers_types[i];
+        std::cout << "Processing layer " << i << " with type: " << type << std::endl;
         if (type == "NaturalGradientAffineComponent") {
             StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
             output = layer->forward(input, rows, cols, device, context);
