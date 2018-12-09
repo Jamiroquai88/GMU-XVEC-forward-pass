@@ -129,7 +129,7 @@ std::vector<float> loadtxt(std::string fea_path, unsigned long &num_samples, uns
 }
 
 
-void savetxt(std::string output_fname, std::vector<float> matrix, unsigned long cols, unsigned long rows) {
+void savetxt(std::string output_fname, std::vector<float> matrix, unsigned long rows, unsigned long cols) {
     std::ofstream myfile(output_fname);
     if (myfile.is_open()) {
         for (unsigned long x = 0; x < rows; x++) {

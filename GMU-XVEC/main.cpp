@@ -113,7 +113,8 @@ bool test(cl_device_id device, cl_context context) {
 
 
 /* Find a GPU or CPU associated with the first available platform */
-cl_device_id create_device() {
+cl_device_id create_device(bool use_cpu=false) {
+    size_t value_size;
     cl_platform_id platform;
     cl_device_id dev;
     int err;
@@ -126,14 +127,24 @@ cl_device_id create_device() {
     }
     
     /* Access a device */
-    err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &dev, NULL);
-    if(err == CL_DEVICE_NOT_FOUND) {
+    if (!use_cpu) {
+        err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &dev, NULL);
+        if(err == CL_DEVICE_NOT_FOUND) {
+            err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 1, &dev, NULL);
+        }
+    }
+    else {
         err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 1, &dev, NULL);
     }
     if(err < 0) {
         std::cerr << "ERROR: Couldn't access any devices." << std::endl;
         exit(1);
     }
+    clGetDeviceInfo(dev, CL_DEVICE_NAME, 0, NULL, &value_size);
+    char *value = (char*) malloc(value_size);
+    clGetDeviceInfo(dev, CL_DEVICE_NAME, value_size, value, NULL);
+    std::cout << "Using OpenCL Device: " << value << std::endl;
+    free(value);
     
     return dev;
 }
@@ -171,8 +182,8 @@ int main(int argc, char * argv[]) {
     }
     
     test(device, context);
-//    NNet nnet = NNet(nnet_path);
-//    nnet.forward(features_path, device, context);
+    NNet nnet = NNet(nnet_path);
+    nnet.forward(features_path, device, context);
  
     return 0;
 }

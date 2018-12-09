@@ -29,7 +29,7 @@ std::vector<int> str2ints(std::string str);
 void transpose(float *src, float *dst, const unsigned long N, const unsigned long M);
 
 std::vector<float> loadtxt(std::string fea_path, unsigned long &num_samples, unsigned long &num_dims);
-void savetxt(std::string output_fname, std::vector<float> matrix, unsigned long cols, unsigned long rows);
+void savetxt(std::string output_fname, std::vector<float> matrix, unsigned long rows, unsigned long cols);
 
 bool allclose(std::vector<float> v1, std::vector<float> v2, float eps=0.0001);
 

@@ -347,12 +347,17 @@ float * NNet::forward(std::string fea_path, cl_device_id device, cl_context cont
             input = output;
             DenseLayer *layer2 = dynamic_cast<DenseLayer*>(layers[++i]);
             output = layer2->forward(input, rows, cols, device, context);
-            savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
         }
         if (type == "RectifiedLinearComponent") {
             ReLULayer *relu_layer = dynamic_cast<ReLULayer*>(layers[i]);
             output = relu_layer->forward(input, rows, cols, device, context);
         }
+        if (type == "BatchNormComponent") {
+            BatchNormLayer *batchnorm_layer = dynamic_cast<BatchNormLayer*>(layers[i]);
+            output = batchnorm_layer->forward(input, rows, cols, device, context);
+        }
+        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
+        input = output;
     }
     return NULL;
 }
