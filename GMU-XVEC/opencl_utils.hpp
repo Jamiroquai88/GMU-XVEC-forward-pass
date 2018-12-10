@@ -9,6 +9,8 @@
 #ifndef opencl_utils_h
 #define opencl_utils_h
 
+#include <string>
+
 #define MAC
 #define CL_SILENCE_DEPRECATION true
 

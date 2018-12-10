@@ -115,7 +115,7 @@ void test_statistics_pooling_layer(cl_device_id device, cl_context context) {
     std::vector<float> output = layer.forward(input, rows, cols, device, context);
     std::vector<float> ref = loadtxt("tests/ref_statistics_pooling_layer.txt", rows, cols);
     if (!allclose(output, ref)) {
-        std::cerr << "TEST FAIL: tests/ref_statistics_extraction_layer.txt" << std::endl;
+        std::cerr << "TEST FAIL: tests/ref_statistics_pooling_layer.txt" << std::endl;
         exit(1);
     }
 }
