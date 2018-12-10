@@ -79,7 +79,7 @@ std::vector<float> DenseLayer::forward(std::vector<float> input, unsigned long &
     
     /* Enqueue multiplication kernel */
     cl_event prof_event;
-    size_t global_size =get_global_group_size(output_size, max_local_size);
+    size_t global_size = get_global_group_size(output_size, max_local_size);
     err = clEnqueueNDRangeKernel(queue, dot_kernel, 1, NULL, &global_size,
                                  &max_local_size, 0, NULL, &prof_event);
     if (err < 0) {

@@ -368,12 +368,12 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
             output = batchnorm_layer->forward(input, rows, cols, device, context);
         }
         if (type == "StatisticsExtractionComponent") {
-            std::cerr << "NOT IMPLEMENTED ERROR" << std::endl;
-            exit(1);
+            StatisticsExtractionLayer *statistics_extraction_layer = dynamic_cast<StatisticsExtractionLayer*>(layers[i]);
+            output = statistics_extraction_layer->forward(input, rows, cols, device, context);
         }
         if (type == "StatisticsPoolingComponent") {
-            std::cerr << "NOT IMPLEMENTED ERROR" << std::endl;
-            exit(1);
+            StatisticsPoolingLayer *statistics_extraction_layer = dynamic_cast<StatisticsPoolingLayer*>(layers[i]);
+            output = statistics_extraction_layer->forward(input, rows, cols, device, context);
         }
         if (type == "output-node")
             break;

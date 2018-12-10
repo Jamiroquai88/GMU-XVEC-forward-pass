@@ -20,6 +20,7 @@
 #include "layers/relu.hpp"
 #include "layers/batchnorm.hpp"
 #include "layers/statistics_extraction.hpp"
+#include "layers/statistics_pooling.hpp"
 
 #define MAC
 #define CL_SILENCE_DEPRECATION true
@@ -107,12 +108,12 @@ void test_statistics_extraction_layer(cl_device_id device, cl_context context) {
 }
 
 
-void test_statistics_pooling_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
-    StatisticsExtractionLayer layer = StatisticsExtractionLayer("", true);
-    cols = rows * cols;
-    rows = 1;
+void test_statistics_pooling_layer(cl_device_id device, cl_context context) {
+    unsigned long rows, cols;
+    StatisticsPoolingLayer layer = StatisticsPoolingLayer("", 15, true, 0, 10000, 1e-10);
+    std::vector<float> input = loadtxt("tests/input_statistics_pooling_layer.txt", rows, cols);
     std::vector<float> output = layer.forward(input, rows, cols, device, context);
-    std::vector<float> ref = loadtxt("tests/ref_statistics_extraction_layer.txt", rows, cols);
+    std::vector<float> ref = loadtxt("tests/ref_statistics_pooling_layer.txt", rows, cols);
     if (!allclose(output, ref)) {
         std::cerr << "TEST FAIL: tests/ref_statistics_extraction_layer.txt" << std::endl;
         exit(1);
@@ -132,6 +133,7 @@ bool test(cl_device_id device, cl_context context) {
     input = test_relu_layer(input, rows, cols, device, context);
     input = test_batchnorm_layer(input, rows, cols, device, context);
     test_statistics_extraction_layer(device, context);
+    test_statistics_pooling_layer(device, context);
     
     std::cerr << "All tests successfully passed." << std::endl;
     return true;
@@ -213,5 +215,7 @@ int main(int argc, char * argv[]) {
     nnet.forward(features_path, device, context);
  
     clReleaseContext(context);
+    clReleaseDevice(device);
+    
     return 0;
 }
