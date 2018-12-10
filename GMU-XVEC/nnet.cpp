@@ -344,6 +344,14 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     std::vector<float> output;
     
     std::string type;
+    unsigned long fea_rows, fea_cols;
+    fea_rows = rows;
+    fea_cols = cols;
+    for (unsigned int j = 0; j < 100; j ++) {
+        input = features;
+        rows = fea_rows;
+        cols = fea_cols;
+        std::cout << features.size() << std::endl;
     for (unsigned int i = 0; i < layers.size(); i++) {
         type = layers_types[i];
         std::cout << "Processing layer " << i << " with type: " << type << std::endl;
@@ -351,7 +359,7 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
             if (type == "NaturalGradientAffineComponent StackingLayer") {
                 StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
                 output = layer->forward(input, rows, cols, device, context);
-                savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
+//                savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
                 input = output;
                 i++;
                 std::cout << "Processing layer " << i << " with type: " << layers_types[i] << std::endl;
@@ -378,8 +386,9 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
         if (type == "output-node")
             break;
         
-        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
+//        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
         input = output;
+    }
     }
     return output;
 }
