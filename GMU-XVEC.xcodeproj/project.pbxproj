@@ -12,6 +12,7 @@
 		492088BA21B4465E005EAEFE /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 492088B921B4465E005EAEFE /* OpenCL.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		492088C021B45467005EAEFE /* dense.cl in Sources */ = {isa = PBXBuildFile; fileRef = 492088BF21B45467005EAEFE /* dense.cl */; };
 		492088C221B45DE2005EAEFE /* opencl_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492088C121B45DE2005EAEFE /* opencl_utils.cpp */; };
+		49430BF821BE684800EE4F6A /* statistics_extraction.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49430BF721BE684800EE4F6A /* statistics_extraction.cl */; };
 		49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8B21BBDA3700335482 /* stacking.cpp */; };
 		49B78C8E21BBDC9500335482 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8D21BBDC9500335482 /* utils.cpp */; };
 		49B78C9021BBF32C00335482 /* dense.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8F21BBF32C00335482 /* dense.cpp */; };
@@ -51,6 +52,7 @@
 		492088BB21B4500F005EAEFE /* opencl_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = opencl_utils.hpp; sourceTree = "<group>"; };
 		492088BF21B45467005EAEFE /* dense.cl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.opencl; path = dense.cl; sourceTree = "<group>"; };
 		492088C121B45DE2005EAEFE /* opencl_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = opencl_utils.cpp; sourceTree = "<group>"; };
+		49430BF721BE684800EE4F6A /* statistics_extraction.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = statistics_extraction.cl; sourceTree = "<group>"; };
 		49B78C8B21BBDA3700335482 /* stacking.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stacking.cpp; sourceTree = "<group>"; };
 		49B78C8D21BBDC9500335482 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		49B78C8F21BBF32C00335482 /* dense.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dense.cpp; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				49B78C9721BC496000335482 /* batchnorm.cl */,
 				492088B321B2EA63005EAEFE /* statistics_extraction.hpp */,
 				49B78C9921BD98A700335482 /* statistics_extraction.cpp */,
+				49430BF721BE684800EE4F6A /* statistics_extraction.cl */,
 				492088B421B2EA77005EAEFE /* statistics_pooling.hpp */,
 				49B78C9D21BDA4FC00335482 /* statistics_pooling.cpp */,
 			);
@@ -200,6 +203,7 @@
 				49B78C9621BC440000335482 /* batchnorm.cpp in Sources */,
 				49B78C9E21BDA4FC00335482 /* statistics_pooling.cpp in Sources */,
 				49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */,
+				49430BF821BE684800EE4F6A /* statistics_extraction.cl in Sources */,
 				49B78C9221BC211C00335482 /* relu.cl in Sources */,
 				49B78C8E21BBDC9500335482 /* utils.cpp in Sources */,
 				49B78C9A21BD98A700335482 /* statistics_extraction.cpp in Sources */,

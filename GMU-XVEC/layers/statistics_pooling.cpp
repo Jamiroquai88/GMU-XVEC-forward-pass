@@ -17,5 +17,5 @@ std::vector<float> StatisticsPoolingLayer::forward(std::vector<float> input, uns
     std::copy(input.begin(), input.end(), output.begin() + cols);
     
     
-    
+    return output;
 }

@@ -152,6 +152,7 @@ bool allclose(std::vector<float> v1, std::vector<float> v2, float eps) {
         }
     }
     else {
+        std::cerr << "Invalid size " << v1.size() << " and " << v2.size() << "." << std::endl;
         return false;
     }
     return true;

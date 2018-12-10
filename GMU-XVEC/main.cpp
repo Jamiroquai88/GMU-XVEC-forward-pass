@@ -94,21 +94,20 @@ std::vector<float> test_batchnorm_layer(std::vector<float> input, unsigned long 
 }
 
 
-std::vector<float> test_statistics_extraction_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+void test_statistics_extraction_layer(cl_device_id device, cl_context context) {
+    unsigned long rows, cols;
+    std::vector<float> input = loadtxt("tests/input_statistics_extraction_layer.txt", rows, cols);
     StatisticsExtractionLayer layer = StatisticsExtractionLayer("", true);
-    cols = rows * cols;
-    rows = 1;
     std::vector<float> output = layer.forward(input, rows, cols, device, context);
     std::vector<float> ref = loadtxt("tests/ref_statistics_extraction_layer.txt", rows, cols);
     if (!allclose(output, ref)) {
         std::cerr << "TEST FAIL: tests/ref_statistics_extraction_layer.txt" << std::endl;
         exit(1);
     }
-    return output;
 }
 
 
-std::vector<float> test_statistics_pooling_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+void test_statistics_pooling_layer(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
     StatisticsExtractionLayer layer = StatisticsExtractionLayer("", true);
     cols = rows * cols;
     rows = 1;
@@ -118,7 +117,6 @@ std::vector<float> test_statistics_pooling_layer(std::vector<float> input, unsig
         std::cerr << "TEST FAIL: tests/ref_statistics_extraction_layer.txt" << std::endl;
         exit(1);
     }
-    return output;
 }
 
 
@@ -133,7 +131,7 @@ bool test(cl_device_id device, cl_context context) {
     input = test_dense_layer(input, rows, cols, device, context);
     input = test_relu_layer(input, rows, cols, device, context);
     input = test_batchnorm_layer(input, rows, cols, device, context);
-    input = test_statistics_extraction_layer(input, rows, cols, device, context);
+    test_statistics_extraction_layer(device, context);
     
     std::cerr << "All tests successfully passed." << std::endl;
     return true;
