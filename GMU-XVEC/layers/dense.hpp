@@ -18,12 +18,13 @@
 
 class DenseLayer : virtual public Layer {
 public:
-    DenseLayer(std::string name, std::vector<float> linear, std::vector<float> bias) : linear(linear), bias(bias) {};
-    std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context);
+    DenseLayer(std::string name, cl_context context, std::vector<float> linear, std::vector<float> bias);
+    cl_mem forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue);
     
 private:
-    std::vector<float> linear;
-    std::vector<float> bias;
+    cl_mem cl_linear;
+    unsigned long linear_size;
+    cl_mem cl_bias;
 };
 
 

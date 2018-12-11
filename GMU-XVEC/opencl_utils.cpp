@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
+#include <vector>
 
 #include "opencl_utils.hpp"
 
@@ -192,4 +193,16 @@ size_t get_global_group_size(size_t array_size, size_t local_size) {
     else {
         return pow(2, ceil(log(array_size)/log(2)));
     }
+}
+
+
+std::vector<float> enqueue_buffer(cl_command_queue queue, cl_mem buffer, unsigned long rows, unsigned long cols) {
+    /* Read output buffer */
+    std::vector<float> output(rows * cols);
+    cl_int err = clEnqueueReadBuffer(queue, buffer, CL_TRUE, 0, sizeof(float) * rows * cols, &output[0], 0, NULL, NULL);
+    if (err < 0) {
+        std::cerr << getCLError(err) << std::endl;
+        exit(1);
+    }
+    return output;
 }

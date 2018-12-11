@@ -29,5 +29,5 @@ main: main.o nnet.o opencl_utils.o utils.o layers/stacking.o layers/dense.o laye
 	$(CP) $(CPFLAGS) -c $< -o $@ -lm $(LIBS)
 
 clean:
-	$(RM) main $(OBJ_FILES) *.h.gch
+	$(RM) main $(OBJ_FILES) *.h.gch layers/*.o
 

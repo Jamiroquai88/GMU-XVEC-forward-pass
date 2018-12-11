@@ -1,10 +1,9 @@
 __kernel void pool_statistics(float variance_floor, unsigned long dim, unsigned long rows, __global float *val, __global float *output) {
-    const int globalId = get_global_id(0);
+    int globalId = get_global_id(0);
     unsigned long cols = dim * 2 + 1;
     if (globalId >= cols) {
         return;
     }
-    
     float cnt = val[0];
 
     if (globalId >= dim) {

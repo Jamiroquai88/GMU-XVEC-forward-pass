@@ -13,13 +13,12 @@
 #include "statistics_pooling.hpp"
 
 
-std::vector<float> StatisticsPoolingLayer::forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+cl_mem StatisticsPoolingLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
     assert(left_context == 0);
     assert(right_context > rows);
     std::vector<float> val(cols);
-    std::copy(input.end() - cols, input.end(), val.begin());
+    unsigned long offset = (rows - 1) * cols;
     unsigned long dim = (cols - 1) / 2;
-    std::vector<float> output(dim * 2);
     
     size_t max_local_size;
     cl_int err;
@@ -32,14 +31,7 @@ std::vector<float> StatisticsPoolingLayer::forward(std::vector<float> input, uns
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
-    cl_mem output_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * output.size(), &output[0], &err);
-    if (err < 0) {
-        std::cerr << getCLError(err) << std::endl;
-        exit(1);
-    }
-    
-    // initialize queue
-    cl_command_queue queue = clCreateCommandQueue(context, device, 0, &err);
+    cl_mem output = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, sizeof(float) * dim * 2, NULL, &err);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
@@ -50,32 +42,23 @@ std::vector<float> StatisticsPoolingLayer::forward(std::vector<float> input, uns
     err |= clSetKernelArg(extraction_kernel, 1, sizeof(unsigned long), &dim);
     err |= clSetKernelArg(extraction_kernel, 2, sizeof(unsigned long), &rows);
     err |= clSetKernelArg(extraction_kernel, 3, sizeof(cl_mem), &val_buffer);
-    err |= clSetKernelArg(extraction_kernel, 4, sizeof(cl_mem), &output_buffer);
+    err |= clSetKernelArg(extraction_kernel, 4, sizeof(cl_mem), &output);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
     
     /* Enqueue multiplication kernel */
-    cl_event prof_event;
     size_t global_size = get_global_group_size(cols, max_local_size);
     err = clEnqueueNDRangeKernel(queue, extraction_kernel, 1, NULL, &global_size,
-                                 &max_local_size, 0, NULL, &prof_event);
-    if (err < 0) {
-        std::cerr << getCLError(err) << std::endl;
-        exit(1);
-    }
-    
-    /* Read output buffer */
-    err = clEnqueueReadBuffer(queue, output_buffer, CL_TRUE, 0, sizeof(float) * output.size(), &output[0], 0, NULL, NULL);
+                                 &max_local_size, 0, NULL, NULL);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
     
     clReleaseMemObject(val_buffer);
-    clReleaseMemObject(output_buffer);
-    clReleaseCommandQueue(queue);
+    clReleaseMemObject(input);
     clReleaseKernel(extraction_kernel);
     clReleaseProgram(program);
     

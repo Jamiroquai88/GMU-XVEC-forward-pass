@@ -20,7 +20,7 @@
 class StackingLayer : virtual public Layer {
 public:
     StackingLayer(std::string name, std::vector<int> offsets) : offsets(offsets) {};
-    std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context);
+    cl_mem forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue);
 
 private:
     std::vector<int> offsets;

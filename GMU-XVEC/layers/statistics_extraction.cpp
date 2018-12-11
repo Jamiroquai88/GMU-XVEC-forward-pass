@@ -17,14 +17,16 @@
 #include "statistics_extraction.hpp"
 
 
-std::vector<float> StatisticsExtractionLayer::forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context) {
+cl_mem StatisticsExtractionLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
+    std::vector<float> input_vec = enqueue_buffer(queue, input, rows, cols);
+    
     unsigned long variance_offset = include_variance ? 1 + cols : 0;
     cols = include_variance ? 1 + 2 * cols : 1 + cols;
     unsigned long output_size = rows * cols;
     std::vector<float> input2(output_size, 1.0f);
     std::vector<float> output(output_size);
     for (unsigned int i = 0; i < rows; i++)
-        std::copy(input.begin() + i * (cols - variance_offset), input.begin() + (i + 1) * (cols - variance_offset), input2.begin() + 1 + i * cols);
+        std::copy(input_vec.begin() + i * (cols - variance_offset), input_vec.begin() + (i + 1) * (cols - variance_offset), input2.begin() + 1 + i * cols);
     
     size_t max_local_size;
     cl_int err;
@@ -37,14 +39,7 @@ std::vector<float> StatisticsExtractionLayer::forward(std::vector<float> input, 
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
-    cl_mem output_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * output_size, &output[0], &err);
-    if (err < 0) {
-        std::cerr << getCLError(err) << std::endl;
-        exit(1);
-    }
-    
-    // initialize queue
-    cl_command_queue queue = clCreateCommandQueue(context, device, 0, &err);
+    cl_mem output_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(float) * output_size, &output[0], &err);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
@@ -62,26 +57,17 @@ std::vector<float> StatisticsExtractionLayer::forward(std::vector<float> input, 
     }
     
     /* Enqueue multiplication kernel */
-    cl_event prof_event;
     size_t global_size = get_global_group_size(cols, max_local_size);
     err = clEnqueueNDRangeKernel(queue, extraction_kernel, 1, NULL, &global_size,
-                                 &max_local_size, 0, NULL, &prof_event);
-    if (err < 0) {
-        std::cerr << getCLError(err) << std::endl;
-        exit(1);
-    }
-        
-    /* Read output buffer */
-    err = clEnqueueReadBuffer(queue, output_buffer, CL_TRUE, 0, sizeof(float) * output_size, &output[0], 0, NULL, NULL);
+                                 &max_local_size, 0, NULL, NULL);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
     
     clReleaseMemObject(input_buffer);
-    clReleaseMemObject(output_buffer);
-    clReleaseCommandQueue(queue);
     clReleaseKernel(extraction_kernel);
     clReleaseProgram(program);
-    return output;
+    
+    return output_buffer;
 }

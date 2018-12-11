@@ -15,6 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 
+#include "opencl_utils.hpp"
 #include "nnet.hpp"
 #include "utils.hpp"
 #include "layers/stacking.hpp"
@@ -25,7 +26,8 @@
 #include "layers/statistics_pooling.hpp"
 
 
-NNet::NNet(std::string nnet_path) {
+NNet::NNet(std::string nnet_path, cl_context context) {
+    m_context = context;
     std::cout << "Parsing neural net config from file " << nnet_path << "." << std::endl;
     std::string line;
     std::vector<std::string> lines;
@@ -301,7 +303,7 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
             layers.push_back(new StackingLayer(name, str2ints(node_attrs["stacking"])));
             layers_types.push_back("NaturalGradientAffineComponent StackingLayer");
         }
-        layers.push_back(new DenseLayer(name, matrix_attrs["LinearParams"], matrix_attrs["BiasParams"]));
+        layers.push_back(new DenseLayer(name, m_context, matrix_attrs["LinearParams"], matrix_attrs["BiasParams"]));
         layers_types.push_back("NaturalGradientAffineComponent DenseLayer");
         is_initialized = true;
     }
@@ -311,7 +313,7 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
         is_initialized = true;
     }
     if (type == "BatchNormComponent") {
-        layers.push_back(new BatchNormLayer(name, matrix_attrs["StatsMean"], matrix_attrs["StatsVar"], std::stof(node_attrs["Epsilon"])));
+        layers.push_back(new BatchNormLayer(name, m_context, matrix_attrs["StatsMean"], matrix_attrs["StatsVar"], std::stof(node_attrs["Epsilon"])));
         layers_types.push_back("BatchNormComponent");
         is_initialized = true;
     }
@@ -334,61 +336,70 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
 }
 
 
-std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_context context) {
+std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_context context, cl_command_queue queue) {
     std::cout << "Executing forward pass of neural net." << std::endl;
     unsigned long rows;
     unsigned long cols;
-    std::vector<float> features = loadtxt(fea_path, rows, cols);
-    savetxt("/tmp/cpp_fea.txt", features, rows, cols);
-    std::vector<float> input = features;
-    std::vector<float> output;
+    cl_int err;
     
+    std::vector<float> features = loadtxt(fea_path, rows, cols);
+    cl_mem features_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * features.size(), &features[0], &err);
+    if (err < 0) {
+        std::cerr << getCLError(err) << std::endl;
+        exit(1);
+    }
+    cl_mem input = features_buffer;
+    cl_mem output;
+
     std::string type;
     unsigned long fea_rows, fea_cols;
     fea_rows = rows;
     fea_cols = cols;
-    for (unsigned int j = 0; j < 10; j ++) {
-        input = features;
-        rows = fea_rows;
-        cols = fea_cols;
-        std::cout << features.size() << std::endl;
+    
+//    for (unsigned int j = 0; j < 10; j ++) {
+//        input = features;
+//        rows = fea_rows;
+//        cols = fea_cols;
+//        std::cout << features.size() << std::endl;
     for (unsigned int i = 0; i < layers.size(); i++) {
         type = layers_types[i];
         std::cout << "Processing layer " << i << " with type: " << type << std::endl;
         if (startswith(type, "NaturalGradientAffineComponent")) {
             if (type == "NaturalGradientAffineComponent StackingLayer") {
                 StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
-                output = layer->forward(input, rows, cols, device, context);
-//                savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
+                output = layer->forward(input, rows, cols, device, context, queue);
+                savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
                 input = output;
                 i++;
                 std::cout << "Processing layer " << i << " with type: " << layers_types[i] << std::endl;
             }
             DenseLayer *layer2 = dynamic_cast<DenseLayer*>(layers[i]);
-            output = layer2->forward(input, rows, cols, device, context);
+            output = layer2->forward(input, rows, cols, device, context, queue);
         }
         if (type == "RectifiedLinearComponent") {
             ReLULayer *relu_layer = dynamic_cast<ReLULayer*>(layers[i]);
-            output = relu_layer->forward(input, rows, cols, device, context);
+            output = relu_layer->forward(input, rows, cols, device, context, queue);
         }
         if (type == "BatchNormComponent") {
             BatchNormLayer *batchnorm_layer = dynamic_cast<BatchNormLayer*>(layers[i]);
-            output = batchnorm_layer->forward(input, rows, cols, device, context);
+            output = batchnorm_layer->forward(input, rows, cols, device, context, queue);
         }
         if (type == "StatisticsExtractionComponent") {
             StatisticsExtractionLayer *statistics_extraction_layer = dynamic_cast<StatisticsExtractionLayer*>(layers[i]);
-            output = statistics_extraction_layer->forward(input, rows, cols, device, context);
+            output = statistics_extraction_layer->forward(input, rows, cols, device, context, queue);
         }
         if (type == "StatisticsPoolingComponent") {
             StatisticsPoolingLayer *statistics_extraction_layer = dynamic_cast<StatisticsPoolingLayer*>(layers[i]);
-            output = statistics_extraction_layer->forward(input, rows, cols, device, context);
+            output = statistics_extraction_layer->forward(input, rows, cols, device, context, queue);
         }
         if (type == "output-node")
             break;
-        
-//        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", output, rows, cols);
+
+        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
         input = output;
     }
-    }
-    return output;
+//    }
+    std::vector<float> output_vec = enqueue_buffer(queue, output, rows, cols);
+    clReleaseMemObject(output);
+    return output_vec;
 }

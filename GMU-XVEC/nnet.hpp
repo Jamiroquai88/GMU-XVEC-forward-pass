@@ -33,12 +33,13 @@ public:
 
 class NNet {
 public:
-    NNet(std::string nnet_path);
-    std::vector<float> forward(std::string fea_path, cl_device_id device, cl_context context);
+    NNet(std::string nnet_path, cl_context context);
+    std::vector<float> forward(std::string fea_path, cl_device_id device, cl_context context, cl_command_queue queue);
     
 private:
     std::vector<Layer*> layers;
     std::vector<std::string> layers_types;
+    cl_context m_context;
     
     std::unordered_map<std::string, std::string> ParseNodeAttributes(std::vector<std::string> attributes, std::string type);
     std::string ParseNodeAttributeValue(std::string value, std::vector<std::string> &offsets);

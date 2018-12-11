@@ -18,13 +18,13 @@
 
 class BatchNormLayer : virtual public Layer {
 public:
-    BatchNormLayer(std::string name, std::vector<float> mean, std::vector<float> variance, float epsilon) : mean(mean), variance(variance), epsilon(epsilon) {};
-    std::vector<float> forward(std::vector<float> input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context);
+    BatchNormLayer(std::string name, cl_context context, std::vector<float> mean, std::vector<float> variance, float epsilon);
+    cl_mem forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue);
     
 private:
-    std::vector<float> mean;
-    std::vector<float> variance;
-    float epsilon;
+    cl_mem cl_mean;
+    cl_mem cl_variance;
+    cl_mem cl_epsilon;
 };
 
 

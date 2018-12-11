@@ -14,6 +14,7 @@
 		492088C221B45DE2005EAEFE /* opencl_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 492088C121B45DE2005EAEFE /* opencl_utils.cpp */; };
 		49430BF821BE684800EE4F6A /* statistics_extraction.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49430BF721BE684800EE4F6A /* statistics_extraction.cl */; };
 		49430BFA21BEF21700EE4F6A /* statistics_pooling.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49430BF921BEF21700EE4F6A /* statistics_pooling.cl */; };
+		4992111021C028260061C216 /* stacking.cl in Sources */ = {isa = PBXBuildFile; fileRef = 4992110F21C028260061C216 /* stacking.cl */; };
 		49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8B21BBDA3700335482 /* stacking.cpp */; };
 		49B78C8E21BBDC9500335482 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8D21BBDC9500335482 /* utils.cpp */; };
 		49B78C9021BBF32C00335482 /* dense.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8F21BBF32C00335482 /* dense.cpp */; };
@@ -55,6 +56,7 @@
 		492088C121B45DE2005EAEFE /* opencl_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = opencl_utils.cpp; sourceTree = "<group>"; };
 		49430BF721BE684800EE4F6A /* statistics_extraction.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = statistics_extraction.cl; sourceTree = "<group>"; };
 		49430BF921BEF21700EE4F6A /* statistics_pooling.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = statistics_pooling.cl; sourceTree = "<group>"; };
+		4992110F21C028260061C216 /* stacking.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = stacking.cl; sourceTree = "<group>"; };
 		49B78C8B21BBDA3700335482 /* stacking.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stacking.cpp; sourceTree = "<group>"; };
 		49B78C8D21BBDC9500335482 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		49B78C8F21BBF32C00335482 /* dense.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dense.cpp; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 			children = (
 				492088AA21B2D5DE005EAEFE /* stacking.hpp */,
 				49B78C8B21BBDA3700335482 /* stacking.cpp */,
+				4992110F21C028260061C216 /* stacking.cl */,
 				492088AF21B2E47B005EAEFE /* dense.hpp */,
 				49B78C8F21BBF32C00335482 /* dense.cpp */,
 				492088BF21B45467005EAEFE /* dense.cl */,
@@ -210,6 +213,7 @@
 				49430BFA21BEF21700EE4F6A /* statistics_pooling.cl in Sources */,
 				49B78C9221BC211C00335482 /* relu.cl in Sources */,
 				49B78C8E21BBDC9500335482 /* utils.cpp in Sources */,
+				4992111021C028260061C216 /* stacking.cl in Sources */,
 				49B78C9A21BD98A700335482 /* statistics_extraction.cpp in Sources */,
 				490708C321AF060200C27C38 /* nnet.cpp in Sources */,
 				490708BB21AF020B00C27C38 /* main.cpp in Sources */,
