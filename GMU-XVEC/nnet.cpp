@@ -354,14 +354,14 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     fea_rows = rows;
     fea_cols = cols;
     
-//    for (unsigned int j = 0; j < 10; j ++) {
-//        input = features_buffer;
-//        rows = fea_rows;
-//        cols = fea_cols;
+    for (unsigned int j = 0; j < 10; j ++) {
+        input = features_buffer;
+        rows = fea_rows;
+        cols = fea_cols;
 //        std::cout << features.size() << std::endl;
     for (unsigned int i = 0; i < m_layers.size(); i++) {
         type = m_layers_types[i];
-        std::cout << "Processing layer " << i << " with type: " << type << std::endl;
+//        std::cout << "Processing layer " << i << " with type: " << type << std::endl;
         if (startswith(type, "NaturalGradientAffineComponent")) {
             if (type == "NaturalGradientAffineComponent StackingLayer") {
                 StackingLayer *layer = dynamic_cast<StackingLayer*>(m_layers[i]);
@@ -369,7 +369,7 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
 //                savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
                 input = output;
                 i++;
-                std::cout << "Processing layer " << i << " with type: " << m_layers_types[i] << std::endl;
+//                std::cout << "Processing layer " << i << " with type: " << m_layers_types[i] << std::endl;
             }
             DenseLayer *layer2 = dynamic_cast<DenseLayer*>(m_layers[i]);
             output = layer2->forward(input, rows, cols, device, context, queue);
@@ -409,9 +409,51 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
         type = m_layers_types[i];
         m_layers[i]->ProfileInfo(type);
     }
+        
+    FreeOutputs();
+    }
     
     std::vector<float> output_vec = enqueue_buffer(queue, output, rows, cols);
     return output_vec;
+}
+
+
+void NNet::FreeOutputs() {
+    for (unsigned int i = 0; i < m_layers.size(); i++) {
+        std::string type = m_layers_types[i];
+        if (type == "NaturalGradientAffineComponent StackingLayer") {
+            StackingLayer *stacking_layer = dynamic_cast<StackingLayer*>(m_layers[i]);
+            stacking_layer->Free();
+            stacking_layer->FreeBase();
+        }
+        else if (type == "NaturalGradientAffineComponent DenseLayer") {
+            DenseLayer *dense_layer = dynamic_cast<DenseLayer*>(m_layers[i]);
+            dense_layer->Free();
+            dense_layer->FreeBase();
+        }
+        else if (type == "RectifiedLinearComponent") {
+            ReLULayer *relu_layer = dynamic_cast<ReLULayer*>(m_layers[i]);
+            relu_layer->FreeBase();
+        }
+        else if (type == "BatchNormComponent") {
+            BatchNormLayer *batchnorm_layer = dynamic_cast<BatchNormLayer*>(m_layers[i]);
+            batchnorm_layer->FreeBase();
+        }
+        else if (type == "StatisticsExtractionComponent") {
+            StatisticsExtractionLayer *statistics_extraction_layer = dynamic_cast<StatisticsExtractionLayer*>(m_layers[i]);
+            statistics_extraction_layer->Free();
+            statistics_extraction_layer->FreeBase();
+        }
+        else if (type == "StatisticsPoolingComponent") {
+            StatisticsPoolingLayer *statistics_extraction_layer = dynamic_cast<StatisticsPoolingLayer*>(m_layers[i]);
+            statistics_extraction_layer->Free();
+            statistics_extraction_layer->FreeBase();
+        }
+        else {
+            std::cerr << "Unexpected type of node " << type << "." << std::endl;
+            exit(1);
+        }
+    }
 }
 
 
@@ -422,4 +464,11 @@ void Layer::ProfileInfo(std::string type) {
     clGetEventProfilingInfo(m_profiling_event, CL_PROFILING_COMMAND_END,
                             sizeof(time_end), &time_end, NULL);
     std::cout << "Profiling: " << type << " kernel completed in " << (time_end - time_start) / 1000000 << " ms." << std::endl;
+}
+
+
+void Layer::FreeBase() {
+    clReleaseEvent(m_profiling_event);
+    clReleaseKernel(m_kernel);
+    clReleaseProgram(m_program);
 }

@@ -27,6 +27,7 @@ public:
     
     virtual void foo() {};
     void ProfileInfo(std::string type);
+    void FreeBase();
     
     std::string m_name;
     cl_program m_program;
@@ -50,6 +51,7 @@ private:
     
     void InitLayersFromNode(std::unordered_map<std::string, std::string> &node_attrs, std::unordered_map<std::string, std::vector<float>> &matrix_attrs);
     
+    void FreeOutputs();
     
     std::vector<Layer*> m_layers;
     std::vector<std::string> m_layers_types;

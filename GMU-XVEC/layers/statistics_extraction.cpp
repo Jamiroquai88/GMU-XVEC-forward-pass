@@ -17,6 +17,12 @@
 #include "statistics_extraction.hpp"
 
 
+void StatisticsExtractionLayer::Free() {
+    clReleaseMemObject(m_output);
+    clReleaseMemObject(m_input2);
+}
+
+
 cl_mem StatisticsExtractionLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
     int variance_offset = m_include_variance ? 1 + (int)cols : -1;
     cols = m_include_variance ? 1 + 2 * cols : 1 + cols;

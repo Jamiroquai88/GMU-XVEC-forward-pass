@@ -13,6 +13,11 @@
 #include "../opencl_utils.hpp"
 
 
+void DenseLayer::Free() {
+    clReleaseMemObject(m_output);
+}
+
+
 DenseLayer::DenseLayer(std::string name, cl_context context, std::vector<float> linear, std::vector<float> bias) {
     cl_int err;
     m_linear_size = linear.size();

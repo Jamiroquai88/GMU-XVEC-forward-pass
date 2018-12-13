@@ -13,6 +13,11 @@
 #include "statistics_pooling.hpp"
 
 
+void StatisticsPoolingLayer::Free() {
+    clReleaseMemObject(m_output);
+}
+
+
 cl_mem StatisticsPoolingLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
     assert(m_left_context == 0);
     assert(m_right_context > rows);

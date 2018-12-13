@@ -13,6 +13,11 @@
 #include "../opencl_utils.hpp"
 
 
+void StackingLayer::Free() {
+    clReleaseMemObject(m_output);
+}
+
+
 cl_mem StackingLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
     int maxval = m_offsets[std::max_element(m_offsets.begin(), m_offsets.end()) - m_offsets.begin()];
     int minval = m_offsets[std::min_element(m_offsets.begin(), m_offsets.end()) - m_offsets.begin()];
