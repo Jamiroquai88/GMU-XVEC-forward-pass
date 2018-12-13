@@ -470,7 +470,7 @@ void Layer::ProfileInfo(std::string type) {
                             sizeof(time_start), &time_start, NULL);
     clGetEventProfilingInfo(m_profiling_event, CL_PROFILING_COMMAND_END,
                             sizeof(time_end), &time_end, NULL);
-    std::cout << "Profiling: " << type << " kernel completed in " << (time_end - time_start) / 1000000 << " ms." << std::endl;
+    std::cout << "Profiling: " << type << " kernel completed in " << (time_end - time_start) / 1000 << " us." << std::endl;
 }
 
 
