@@ -18,12 +18,13 @@
 
 
 void StatisticsExtractionLayer::Free() {
-    clReleaseMemObject(m_output);
+    clReleaseMemObject(m_input);
     clReleaseMemObject(m_input2);
 }
 
 
 cl_mem StatisticsExtractionLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
+    m_input = input;
     int variance_offset = m_include_variance ? 1 + (int)cols : -1;
     cols = m_include_variance ? 1 + 2 * cols : 1 + cols;
     unsigned long input_cols = variance_offset != -1 ? variance_offset - 1 : cols - 1;

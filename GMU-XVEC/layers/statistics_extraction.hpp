@@ -25,6 +25,7 @@ public:
     
 private:
     cl_mem m_output;
+    cl_mem m_input;
     cl_mem m_input2;
     bool m_include_variance;
 };

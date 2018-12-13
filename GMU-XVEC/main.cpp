@@ -47,6 +47,8 @@ cl_mem test_stacking_layer(cl_mem input, unsigned long &rows, unsigned long &col
         std::cerr << "TEST FAIL: tests/ref_stacking_layer.txt" << std::endl;
         exit(1);
     }
+    layer.Free();
+    layer.FreeBase();
     return output;
 }
 
@@ -63,6 +65,8 @@ cl_mem test_dense_layer(cl_mem input, unsigned long &rows, unsigned long &cols, 
         std::cerr << "TEST FAIL: tests/ref_dense_layer.txt" << std::endl;
         exit(1);
     }
+    layer.Free();
+    layer.FreeBase();
     return output;
 }
 
@@ -75,6 +79,7 @@ cl_mem test_relu_layer(cl_mem input, unsigned long &rows, unsigned long &cols, c
         std::cerr << "TEST FAIL: tests/ref_relu_layer.txt" << std::endl;
         exit(1);
     }
+    layer.FreeBase();
     return output;
 }
 
@@ -91,6 +96,8 @@ cl_mem test_batchnorm_layer(cl_mem input, unsigned long &rows, unsigned long &co
         std::cerr << "TEST FAIL: tests/ref_batchnorm_layer.txt" << std::endl;
         exit(1);
     }
+    clReleaseMemObject(output);
+    layer.FreeBase();
     return output;
 }
 
@@ -112,6 +119,9 @@ void test_statistics_extraction_layer(cl_device_id device, cl_context context, c
         std::cerr << "TEST FAIL: tests/ref_statistics_extraction_layer.txt" << std::endl;
         exit(1);
     }
+    clReleaseMemObject(output);
+    layer.Free();
+    layer.FreeBase();
 }
 
 
@@ -133,6 +143,8 @@ void test_statistics_pooling_layer(cl_device_id device, cl_context context, cl_c
         std::cerr << "TEST FAIL: tests/ref_statistics_pooling_layer.txt" << std::endl;
         exit(1);
     }
+    layer.Free();
+    layer.FreeBase();
 }
 
 

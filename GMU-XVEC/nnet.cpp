@@ -341,12 +341,7 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     cl_int err;
     
     std::vector<float> features = loadtxt(fea_path, rows, cols);
-    cl_mem features_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(float) * features.size(), &features[0], &err);
-    if (err < 0) {
-        std::cerr << getCLError(err) << std::endl;
-        exit(1);
-    }
-    cl_mem input = features_buffer;
+
     cl_mem output;
 
     std::string type;
@@ -355,7 +350,12 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     fea_cols = cols;
     
     for (unsigned int j = 0; j < 10; j ++) {
-        input = features_buffer;
+        cl_mem features_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(float) * features.size(), &features[0], &err);
+        if (err < 0) {
+            std::cerr << getCLError(err) << std::endl;
+            exit(1);
+        }
+        cl_mem input = features_buffer;
         rows = fea_rows;
         cols = fea_cols;
 //        std::cout << features.size() << std::endl;
@@ -414,40 +414,47 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     }
     
     std::vector<float> output_vec = enqueue_buffer(queue, output, rows, cols);
+    clReleaseMemObject(output);
     return output_vec;
 }
 
 
-void NNet::FreeOutputs() {
+void NNet::FreeOutputs(bool is_final) {
     for (unsigned int i = 0; i < m_layers.size(); i++) {
         std::string type = m_layers_types[i];
         if (type == "NaturalGradientAffineComponent StackingLayer") {
             StackingLayer *stacking_layer = dynamic_cast<StackingLayer*>(m_layers[i]);
             stacking_layer->Free();
-            stacking_layer->FreeBase();
+            if (is_final)
+                stacking_layer->FreeBase();
         }
         else if (type == "NaturalGradientAffineComponent DenseLayer") {
             DenseLayer *dense_layer = dynamic_cast<DenseLayer*>(m_layers[i]);
             dense_layer->Free();
-            dense_layer->FreeBase();
+            if (is_final)
+                dense_layer->FreeBase();
         }
         else if (type == "RectifiedLinearComponent") {
             ReLULayer *relu_layer = dynamic_cast<ReLULayer*>(m_layers[i]);
-            relu_layer->FreeBase();
+            if (is_final)
+                relu_layer->FreeBase();
         }
         else if (type == "BatchNormComponent") {
             BatchNormLayer *batchnorm_layer = dynamic_cast<BatchNormLayer*>(m_layers[i]);
-            batchnorm_layer->FreeBase();
+            if (is_final)
+                batchnorm_layer->FreeBase();
         }
         else if (type == "StatisticsExtractionComponent") {
             StatisticsExtractionLayer *statistics_extraction_layer = dynamic_cast<StatisticsExtractionLayer*>(m_layers[i]);
             statistics_extraction_layer->Free();
-            statistics_extraction_layer->FreeBase();
+            if (is_final)
+                statistics_extraction_layer->FreeBase();
         }
         else if (type == "StatisticsPoolingComponent") {
             StatisticsPoolingLayer *statistics_extraction_layer = dynamic_cast<StatisticsPoolingLayer*>(m_layers[i]);
             statistics_extraction_layer->Free();
-            statistics_extraction_layer->FreeBase();
+            if (is_final)
+                statistics_extraction_layer->FreeBase();
         }
         else {
             std::cerr << "Unexpected type of node " << type << "." << std::endl;

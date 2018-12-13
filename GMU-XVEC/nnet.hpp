@@ -51,7 +51,7 @@ private:
     
     void InitLayersFromNode(std::unordered_map<std::string, std::string> &node_attrs, std::unordered_map<std::string, std::vector<float>> &matrix_attrs);
     
-    void FreeOutputs();
+    void FreeOutputs(bool is_final=true);
     
     std::vector<Layer*> m_layers;
     std::vector<std::string> m_layers_types;

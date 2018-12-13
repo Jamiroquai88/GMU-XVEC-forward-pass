@@ -13,11 +13,6 @@
 #include "../opencl_utils.hpp"
 
 
-void DenseLayer::Free() {
-    clReleaseMemObject(m_output);
-}
-
-
 DenseLayer::DenseLayer(std::string name, cl_context context, std::vector<float> linear, std::vector<float> bias) {
     cl_int err;
     m_linear_size = linear.size();
@@ -37,6 +32,7 @@ DenseLayer::DenseLayer(std::string name, cl_context context, std::vector<float> 
 
 
 cl_mem DenseLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
+    m_input = input;
     cl_int err;
     m_kernel = compile_kernel(device, context, "layers/dense.cl", "dot_product2", m_max_local_size, m_program);
     
