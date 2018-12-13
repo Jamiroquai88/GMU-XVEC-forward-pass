@@ -236,7 +236,7 @@ int main(int argc, char * argv[]) {
         std::cerr << "ERROR: Could not create context." << std::endl;
         exit(1);
     }
-    cl_command_queue queue = clCreateCommandQueue(context, device, 0, &err);
+    cl_command_queue queue = clCreateCommandQueue(context, device, CL_QUEUE_PROFILING_ENABLE, &err);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
