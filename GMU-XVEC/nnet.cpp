@@ -355,7 +355,7 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     fea_cols = cols;
     
     for (unsigned int j = 0; j < 10; j ++) {
-        input = features;
+        input = features_buffer;
         rows = fea_rows;
         cols = fea_cols;
 //        std::cout << features.size() << std::endl;
