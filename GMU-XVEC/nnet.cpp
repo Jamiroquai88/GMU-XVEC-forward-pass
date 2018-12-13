@@ -354,10 +354,10 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     fea_rows = rows;
     fea_cols = cols;
     
-//    for (unsigned int j = 0; j < 10; j ++) {
-//        input = features;
-//        rows = fea_rows;
-//        cols = fea_cols;
+    for (unsigned int j = 0; j < 10; j ++) {
+        input = features;
+        rows = fea_rows;
+        cols = fea_cols;
 //        std::cout << features.size() << std::endl;
     for (unsigned int i = 0; i < m_layers.size(); i++) {
         type = m_layers_types[i];
@@ -397,9 +397,9 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
 //        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
         input = output;
     }
+        clFinish(queue);
+    }
     
-//    }
-    clFinish(queue);
     std::vector<float> output_vec = enqueue_buffer(queue, output, rows, cols);
     return output_vec;
 }
