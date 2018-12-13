@@ -53,7 +53,7 @@ cl_mem BatchNormLayer::forward(cl_mem input, unsigned long &rows, unsigned long 
     /* Enqueue multiplication kernel */
     m_global_size = get_global_group_size(output_size, m_max_local_size);
     err = clEnqueueNDRangeKernel(queue, m_kernel, 1, NULL, &m_global_size,
-                                 &m_max_local_size, 0, NULL, NULL);
+                                 &m_max_local_size, 0, NULL, &m_profiling_event);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);

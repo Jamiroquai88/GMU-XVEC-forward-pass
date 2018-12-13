@@ -354,10 +354,10 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     fea_rows = rows;
     fea_cols = cols;
     
-    for (unsigned int j = 0; j < 10; j ++) {
-        input = features_buffer;
-        rows = fea_rows;
-        cols = fea_cols;
+//    for (unsigned int j = 0; j < 10; j ++) {
+//        input = features_buffer;
+//        rows = fea_rows;
+//        cols = fea_cols;
 //        std::cout << features.size() << std::endl;
     for (unsigned int i = 0; i < m_layers.size(); i++) {
         type = m_layers_types[i];
@@ -397,9 +397,29 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
 //        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
         input = output;
     }
-        clFinish(queue);
+    
+//    }
+    
+    for (unsigned int i = 0; i < m_layers.size(); i++)
+        clWaitForEvents(1, &(m_layers[i]->m_profiling_event));
+
+    clFinish(queue);
+
+    for (unsigned int i = 0; i < m_layers.size(); i++) {
+        type = m_layers_types[i];
+        m_layers[i]->ProfileInfo(type);
     }
     
     std::vector<float> output_vec = enqueue_buffer(queue, output, rows, cols);
     return output_vec;
+}
+
+
+void Layer::ProfileInfo(std::string type) {
+    cl_ulong time_start, time_end;
+    clGetEventProfilingInfo(m_profiling_event, CL_PROFILING_COMMAND_START,
+                            sizeof(time_start), &time_start, NULL);
+    clGetEventProfilingInfo(m_profiling_event, CL_PROFILING_COMMAND_END,
+                            sizeof(time_end), &time_end, NULL);
+    std::cout << "Profiling: " << type << " kernel completed in " << (time_end - time_start) / 1000000 << " ms." << std::endl;
 }

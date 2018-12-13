@@ -26,12 +26,14 @@ class Layer {
 public:
     
     virtual void foo() {};
+    void ProfileInfo(std::string type);
     
     std::string m_name;
     cl_program m_program;
     cl_kernel m_kernel;
     size_t m_max_local_size;
     size_t m_global_size;
+    cl_event m_profiling_event;
 };
 
 
