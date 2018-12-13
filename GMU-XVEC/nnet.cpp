@@ -300,50 +300,48 @@ void NNet::InitLayersFromNode(std::unordered_map<std::string, std::string> &node
     
     if (type == "NaturalGradientAffineComponent") {
         if (node_attrs.find("stacking") != node_attrs.end()) {
-            layers.push_back(new StackingLayer(name, str2ints(node_attrs["stacking"])));
-            layers_types.push_back("NaturalGradientAffineComponent StackingLayer");
+            m_layers.push_back(new StackingLayer(name, str2ints(node_attrs["stacking"])));
+            m_layers_types.push_back("NaturalGradientAffineComponent StackingLayer");
         }
-        layers.push_back(new DenseLayer(name, m_context, matrix_attrs["LinearParams"], matrix_attrs["BiasParams"]));
-        layers_types.push_back("NaturalGradientAffineComponent DenseLayer");
+        m_layers.push_back(new DenseLayer(name, m_context, matrix_attrs["LinearParams"], matrix_attrs["BiasParams"]));
+        m_layers_types.push_back("NaturalGradientAffineComponent DenseLayer");
         is_initialized = true;
     }
     if (type == "RectifiedLinearComponent") {
-        layers.push_back(new ReLULayer(name));
-        layers_types.push_back("RectifiedLinearComponent");
+        m_layers.push_back(new ReLULayer(name));
+        m_layers_types.push_back("RectifiedLinearComponent");
         is_initialized = true;
     }
     if (type == "BatchNormComponent") {
-        layers.push_back(new BatchNormLayer(name, m_context, matrix_attrs["StatsMean"], matrix_attrs["StatsVar"], std::stof(node_attrs["Epsilon"])));
-        layers_types.push_back("BatchNormComponent");
+        m_layers.push_back(new BatchNormLayer(name, m_context, matrix_attrs["StatsMean"], matrix_attrs["StatsVar"], std::stof(node_attrs["Epsilon"])));
+        m_layers_types.push_back("BatchNormComponent");
         is_initialized = true;
     }
     if (type == "StatisticsExtractionComponent") {
-        layers.push_back(new StatisticsExtractionLayer(name, node_attrs["IncludeVarinance"] == "T"));
-        layers_types.push_back("StatisticsExtractionComponent");
+        m_layers.push_back(new StatisticsExtractionLayer(name, node_attrs["IncludeVarinance"] == "T"));
+        m_layers_types.push_back("StatisticsExtractionComponent");
         is_initialized = true;
     }
     if (type == "StatisticsPoolingComponent") {
-        layers.push_back(new StatisticsPoolingLayer(name, std::stoi(node_attrs["InputDim"]), node_attrs["OutputStddevs"] == "T", std::stoi(node_attrs["LeftContext"]), std::stoi(node_attrs["RightContext"]), std::stof(node_attrs["VarianceFloor"])));
-        layers_types.push_back("StatisticsPoolingComponent");
+        m_layers.push_back(new StatisticsPoolingLayer(name, std::stoi(node_attrs["InputDim"]), node_attrs["OutputStddevs"] == "T", std::stoi(node_attrs["LeftContext"]), std::stoi(node_attrs["RightContext"]), std::stof(node_attrs["VarianceFloor"])));
+        m_layers_types.push_back("StatisticsPoolingComponent");
         is_initialized = true;
     }
     if (type == "output-node") {
         is_initialized = true;
-        layers_types.push_back("output-node");
+        m_layers_types.push_back("output-node");
     }
     
     assert(is_initialized);
 }
 
 
-std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_context context, cl_command_queue queue) {
+std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_context context, cl_command_queue queue, unsigned long &rows, unsigned long &cols) {
     std::cout << "Executing forward pass of neural net." << std::endl;
-    unsigned long rows;
-    unsigned long cols;
     cl_int err;
     
     std::vector<float> features = loadtxt(fea_path, rows, cols);
-    cl_mem features_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * features.size(), &features[0], &err);
+    cl_mem features_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(float) * features.size(), &features[0], &err);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
@@ -361,45 +359,47 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
 //        rows = fea_rows;
 //        cols = fea_cols;
 //        std::cout << features.size() << std::endl;
-    for (unsigned int i = 0; i < layers.size(); i++) {
-        type = layers_types[i];
+    for (unsigned int i = 0; i < m_layers.size(); i++) {
+        type = m_layers_types[i];
         std::cout << "Processing layer " << i << " with type: " << type << std::endl;
         if (startswith(type, "NaturalGradientAffineComponent")) {
             if (type == "NaturalGradientAffineComponent StackingLayer") {
-                StackingLayer *layer = dynamic_cast<StackingLayer*>(layers[i]);
+                StackingLayer *layer = dynamic_cast<StackingLayer*>(m_layers[i]);
                 output = layer->forward(input, rows, cols, device, context, queue);
-                savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
+//                savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
                 input = output;
                 i++;
-                std::cout << "Processing layer " << i << " with type: " << layers_types[i] << std::endl;
+                std::cout << "Processing layer " << i << " with type: " << m_layers_types[i] << std::endl;
             }
-            DenseLayer *layer2 = dynamic_cast<DenseLayer*>(layers[i]);
+            DenseLayer *layer2 = dynamic_cast<DenseLayer*>(m_layers[i]);
             output = layer2->forward(input, rows, cols, device, context, queue);
         }
-        if (type == "RectifiedLinearComponent") {
-            ReLULayer *relu_layer = dynamic_cast<ReLULayer*>(layers[i]);
+        else if (type == "RectifiedLinearComponent") {
+            ReLULayer *relu_layer = dynamic_cast<ReLULayer*>(m_layers[i]);
             output = relu_layer->forward(input, rows, cols, device, context, queue);
         }
-        if (type == "BatchNormComponent") {
-            BatchNormLayer *batchnorm_layer = dynamic_cast<BatchNormLayer*>(layers[i]);
+        else if (type == "BatchNormComponent") {
+            BatchNormLayer *batchnorm_layer = dynamic_cast<BatchNormLayer*>(m_layers[i]);
             output = batchnorm_layer->forward(input, rows, cols, device, context, queue);
         }
-        if (type == "StatisticsExtractionComponent") {
-            StatisticsExtractionLayer *statistics_extraction_layer = dynamic_cast<StatisticsExtractionLayer*>(layers[i]);
+        else if (type == "StatisticsExtractionComponent") {
+            StatisticsExtractionLayer *statistics_extraction_layer = dynamic_cast<StatisticsExtractionLayer*>(m_layers[i]);
             output = statistics_extraction_layer->forward(input, rows, cols, device, context, queue);
         }
-        if (type == "StatisticsPoolingComponent") {
-            StatisticsPoolingLayer *statistics_extraction_layer = dynamic_cast<StatisticsPoolingLayer*>(layers[i]);
+        else if (type == "StatisticsPoolingComponent") {
+            StatisticsPoolingLayer *statistics_extraction_layer = dynamic_cast<StatisticsPoolingLayer*>(m_layers[i]);
             output = statistics_extraction_layer->forward(input, rows, cols, device, context, queue);
         }
-        if (type == "output-node")
-            break;
-
-        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
+        else {
+            std::cerr << "Unexpected type of node " << type << "." << std::endl;
+            exit(1);
+        }
+//        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
         input = output;
     }
+    
 //    }
+    clFinish(queue);
     std::vector<float> output_vec = enqueue_buffer(queue, output, rows, cols);
-    clReleaseMemObject(output);
     return output_vec;
 }

@@ -14,55 +14,42 @@
 
 
 cl_mem StatisticsPoolingLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
-    assert(left_context == 0);
-    assert(right_context > rows);
-    std::vector<float> val(cols);
+    assert(m_left_context == 0);
+    assert(m_right_context > rows);
     unsigned long offset = (rows - 1) * cols;
     unsigned long dim = (cols - 1) / 2;
     
-    size_t max_local_size;
     cl_int err;
-    cl_program program;
-    cl_kernel extraction_kernel = compile_kernel(device, context, "layers/statistics_pooling.cl", "pool_statistics", max_local_size, program);
+    m_kernel = compile_kernel(device, context, "layers/statistics_pooling.cl", "pool_statistics", m_max_local_size, m_program);
     
-    // initialize input and output buffers
-    cl_mem val_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(float) * val.size(), &val[0], &err);
-    if (err < 0) {
-        std::cerr << getCLError(err) << std::endl;
-        exit(1);
-    }
-    cl_mem output = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, sizeof(float) * dim * 2, NULL, &err);
+    m_output = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, sizeof(float) * dim * 2, NULL, &err);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
     
     /* Create arguments for extraction kernel */
-    err |= clSetKernelArg(extraction_kernel, 0, sizeof(float), &variance_floor);
-    err |= clSetKernelArg(extraction_kernel, 1, sizeof(unsigned long), &dim);
-    err |= clSetKernelArg(extraction_kernel, 2, sizeof(unsigned long), &rows);
-    err |= clSetKernelArg(extraction_kernel, 3, sizeof(cl_mem), &val_buffer);
-    err |= clSetKernelArg(extraction_kernel, 4, sizeof(cl_mem), &output);
+    err |= clSetKernelArg(m_kernel, 0, sizeof(float), &m_variance_floor);
+    err |= clSetKernelArg(m_kernel, 1, sizeof(unsigned long), &dim);
+    err |= clSetKernelArg(m_kernel, 2, sizeof(unsigned long), &rows);
+    err |= clSetKernelArg(m_kernel, 3, sizeof(cl_mem), &input);
+    err |= clSetKernelArg(m_kernel, 4, sizeof(cl_mem), &m_output);
+    err |= clSetKernelArg(m_kernel, 5, sizeof(unsigned long), &offset);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
     
     /* Enqueue multiplication kernel */
-    size_t global_size = get_global_group_size(cols, max_local_size);
-    err = clEnqueueNDRangeKernel(queue, extraction_kernel, 1, NULL, &global_size,
-                                 &max_local_size, 0, NULL, NULL);
+    m_global_size = get_global_group_size(dim * 2, m_max_local_size);
+    err = clEnqueueNDRangeKernel(queue, m_kernel, 1, NULL, &m_global_size,
+                                 &m_max_local_size, 0, NULL, NULL);
     if (err < 0) {
         std::cerr << getCLError(err) << std::endl;
         exit(1);
     }
     
-    clReleaseMemObject(val_buffer);
-    clReleaseMemObject(input);
-    clReleaseKernel(extraction_kernel);
-    clReleaseProgram(program);
-    
     rows = 1;
     cols = dim * 2;
-    return output;
+    return m_output;
 }

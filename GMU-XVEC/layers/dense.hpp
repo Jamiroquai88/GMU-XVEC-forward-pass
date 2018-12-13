@@ -22,9 +22,10 @@ public:
     cl_mem forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue);
     
 private:
-    cl_mem cl_linear;
-    unsigned long linear_size;
-    cl_mem cl_bias;
+    cl_mem m_linear;
+    unsigned long m_linear_size;
+    cl_mem m_bias;
+    cl_mem m_output;
 };
 
 

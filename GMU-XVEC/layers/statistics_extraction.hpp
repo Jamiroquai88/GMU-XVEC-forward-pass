@@ -19,11 +19,13 @@
 
 class StatisticsExtractionLayer : virtual public Layer {
 public:
-    StatisticsExtractionLayer(std::string name, bool include_variance) : include_variance(include_variance) {};
+    StatisticsExtractionLayer(std::string name, bool include_variance) : m_include_variance(include_variance) {};
     cl_mem forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue);
     
 private:
-    bool include_variance;
+    cl_mem m_output;
+    cl_mem m_input2;
+    bool m_include_variance;
 };
 
 

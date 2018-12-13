@@ -128,6 +128,7 @@ void test_statistics_pooling_layer(cl_device_id device, cl_context context, cl_c
     }
     cl_mem output = layer.forward(input_buffer, rows, cols, device, context, queue);
     std::vector<float> ref = loadtxt("tests/ref_statistics_pooling_layer.txt", rows, cols);
+    savetxt("/tmp/a", enqueue_buffer(queue, output, rows, cols), rows, cols);
     if (!allclose(enqueue_buffer(queue, output, rows, cols), ref)) {
         std::cerr << "TEST FAIL: tests/ref_statistics_pooling_layer.txt" << std::endl;
         exit(1);
@@ -205,8 +206,9 @@ int main(int argc, char * argv[]) {
     int c;
     std::string features_path("");
     std::string nnet_path("");
+    std::string output_path("");
     
-    while ((c = getopt(argc, argv, "i:n:")) != -1) {
+    while ((c = getopt(argc, argv, "i:n:o:")) != -1) {
         switch (c) {
             case 'i':
                 features_path = optarg;
@@ -214,12 +216,15 @@ int main(int argc, char * argv[]) {
             case 'n':
                 nnet_path = optarg;
                 break;
+            case 'o':
+                output_path = optarg;
+                break;
             default:
                 break;
         }
     }
-    if (features_path.length() == 0 || nnet_path.length() == 0) {
-        std::cerr << "ERROR: Arguments '-i' and '-n' must be specified." << std::endl;
+    if (features_path.length() == 0 || nnet_path.length() == 0 || output_path.length() == 0) {
+        std::cerr << "ERROR: Arguments '-i', '-o' and '-n' must be specified." << std::endl;
         exit(1);
     }
     
@@ -237,15 +242,16 @@ int main(int argc, char * argv[]) {
         exit(1);
     }
     
-    test(device, context, queue);
+//    test(device, context, queue);
     NNet nnet = NNet(nnet_path, context);
-    std::cout << "Output: ";
-    for (auto x : nnet.forward(features_path, device, context, queue))
-        std::cout << x << " ";
-    std::cout << std::endl;
+    unsigned long rows, cols;
+    std::vector<float> output = nnet.forward(features_path, device, context, queue, rows, cols);
+    savetxt(output_path, output, rows, cols);
+
  
-    clReleaseContext(context);
-    clReleaseDevice(device);
+//    clReleaseCommandQueue(queue);
+//    clReleaseContext(context);
+//    clReleaseDevice(device);
     
     return 0;
 }
