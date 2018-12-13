@@ -242,7 +242,7 @@ int main(int argc, char * argv[]) {
         exit(1);
     }
     
-//    test(device, context, queue);
+    test(device, context, queue);
     NNet nnet = NNet(nnet_path, context);
     unsigned long rows, cols;
     std::vector<float> output = nnet.forward(features_path, device, context, queue, rows, cols);
