@@ -31,6 +31,13 @@ DenseLayer::DenseLayer(std::string name, cl_context context, std::vector<float> 
 }
 
 
+void DenseLayer::Free() {
+    clReleaseMemObject(m_bias);
+    clReleaseMemObject(m_linear);
+    clReleaseMemObject(m_input);
+}
+
+
 cl_mem DenseLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
     m_input = input;
     cl_int err;

@@ -21,6 +21,7 @@
 #include "layers/batchnorm.hpp"
 #include "layers/statistics_extraction.hpp"
 #include "layers/statistics_pooling.hpp"
+#include "layers/convolution.hpp"
 
 #define MAC
 #define CL_SILENCE_DEPRECATION true
@@ -138,13 +139,34 @@ void test_statistics_pooling_layer(cl_device_id device, cl_context context, cl_c
     }
     cl_mem output = layer.forward(input_buffer, rows, cols, device, context, queue);
     std::vector<float> ref = loadtxt("tests/ref_statistics_pooling_layer.txt", rows, cols);
-    savetxt("/tmp/a", enqueue_buffer(queue, output, rows, cols), rows, cols);
+    
     if (!allclose(enqueue_buffer(queue, output, rows, cols), ref)) {
         std::cerr << "TEST FAIL: tests/ref_statistics_pooling_layer.txt" << std::endl;
         exit(1);
     }
     layer.Free();
     layer.FreeBase();
+}
+
+
+void test_convolutional_layer(cl_device_id device, cl_context context, cl_command_queue queue) {
+    unsigned long rows, cols;
+    std::vector<float> input_image = loadtxt("tests/input_convolution_layer.txt", rows, cols);
+    std::vector<float> weights = loadtxt("tests/weights_convolution_layer.txt", rows, cols);
+    std::vector<float> ref = loadtxt("tests/ref_convolution_layer.txt", rows, cols);
+    ConvolutionalLayer layer = ConvolutionalLayer("", context, 7, 7, 3, 2, 3, 3, 2, weights);
+    cl_int err;
+    cl_mem input_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+                                         sizeof(float) * input_image.size(), &input_image[0], &err);
+    if (err < 0) {
+        std::cerr << getCLError(err) << std::endl;
+        exit(1);
+    }
+    cl_mem output = layer.forward(input_buffer, device, context, queue);
+    if (!allclose(enqueue_buffer(queue, output, 3, 6), ref)) {
+        std::cerr << "TEST FAIL: tests/ref_convolution_layer.txt" << std::endl;
+        exit(1);
+    }
 }
 
 
@@ -169,6 +191,9 @@ bool test(cl_device_id device, cl_context context, cl_command_queue queue) {
     output = test_batchnorm_layer(output, rows, cols, device, context, queue);
     test_statistics_extraction_layer(device, context, queue);
     test_statistics_pooling_layer(device, context, queue);
+    
+    // test convolutional layer and max-pooling
+    test_convolutional_layer(device, context, queue);
     
     std::cerr << "All tests successfully passed." << std::endl;
     return true;

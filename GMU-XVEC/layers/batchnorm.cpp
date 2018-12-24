@@ -33,6 +33,13 @@ BatchNormLayer::BatchNormLayer(std::string name, cl_context context, std::vector
 }
 
 
+void BatchNormLayer::Free() {
+    clReleaseMemObject(m_mean);
+    clReleaseMemObject(m_variance);
+    clReleaseMemObject(m_epsilon);
+}
+
+
 cl_mem BatchNormLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
     cl_int err;
     m_kernel = compile_kernel(device, context, "layers/batchnorm.cl", "batchnorm", m_max_local_size, m_program);

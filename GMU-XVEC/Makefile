@@ -22,7 +22,7 @@ all: main
 debug: CPFLAGS += -DDEBUG -g
 debug: main
 
-main: main.o nnet.o opencl_utils.o utils.o layers/stacking.o layers/dense.o layers/relu.o layers/batchnorm.o layers/statistics_extraction.o layers/statistics_pooling.o
+main: main.o nnet.o opencl_utils.o utils.o layers/stacking.o layers/dense.o layers/relu.o layers/batchnorm.o layers/statistics_extraction.o layers/statistics_pooling.o layers/convolution.o
 	$(CP) $(CPFLAGS) $^ -o $@ -lm $(LIBS)
 
 %.o:%.cpp

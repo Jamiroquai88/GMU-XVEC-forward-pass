@@ -15,6 +15,7 @@
 		49430BF821BE684800EE4F6A /* statistics_extraction.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49430BF721BE684800EE4F6A /* statistics_extraction.cl */; };
 		49430BFA21BEF21700EE4F6A /* statistics_pooling.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49430BF921BEF21700EE4F6A /* statistics_pooling.cl */; };
 		4992111021C028260061C216 /* stacking.cl in Sources */ = {isa = PBXBuildFile; fileRef = 4992110F21C028260061C216 /* stacking.cl */; };
+		499C094921C6D8F80017D2C1 /* convolution.cl in Sources */ = {isa = PBXBuildFile; fileRef = 499C094821C6D8F80017D2C1 /* convolution.cl */; };
 		49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8B21BBDA3700335482 /* stacking.cpp */; };
 		49B78C8E21BBDC9500335482 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8D21BBDC9500335482 /* utils.cpp */; };
 		49B78C9021BBF32C00335482 /* dense.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8F21BBF32C00335482 /* dense.cpp */; };
@@ -24,6 +25,7 @@
 		49B78C9821BC496000335482 /* batchnorm.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9721BC496000335482 /* batchnorm.cl */; };
 		49B78C9A21BD98A700335482 /* statistics_extraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9921BD98A700335482 /* statistics_extraction.cpp */; };
 		49B78C9E21BDA4FC00335482 /* statistics_pooling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C9D21BDA4FC00335482 /* statistics_pooling.cpp */; };
+		49E08DB221C67F6F0066AD53 /* convolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49E08DB021C67F6F0066AD53 /* convolution.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -57,6 +59,7 @@
 		49430BF721BE684800EE4F6A /* statistics_extraction.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = statistics_extraction.cl; sourceTree = "<group>"; };
 		49430BF921BEF21700EE4F6A /* statistics_pooling.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = statistics_pooling.cl; sourceTree = "<group>"; };
 		4992110F21C028260061C216 /* stacking.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = stacking.cl; sourceTree = "<group>"; };
+		499C094821C6D8F80017D2C1 /* convolution.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = convolution.cl; sourceTree = "<group>"; };
 		49B78C8B21BBDA3700335482 /* stacking.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stacking.cpp; sourceTree = "<group>"; };
 		49B78C8D21BBDC9500335482 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		49B78C8F21BBF32C00335482 /* dense.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dense.cpp; sourceTree = "<group>"; };
@@ -66,6 +69,8 @@
 		49B78C9721BC496000335482 /* batchnorm.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = batchnorm.cl; sourceTree = "<group>"; };
 		49B78C9921BD98A700335482 /* statistics_extraction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = statistics_extraction.cpp; sourceTree = "<group>"; };
 		49B78C9D21BDA4FC00335482 /* statistics_pooling.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = statistics_pooling.cpp; sourceTree = "<group>"; };
+		49E08DB021C67F6F0066AD53 /* convolution.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = convolution.cpp; sourceTree = "<group>"; };
+		49E08DB121C67F6F0066AD53 /* convolution.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = convolution.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +138,9 @@
 				492088B421B2EA77005EAEFE /* statistics_pooling.hpp */,
 				49B78C9D21BDA4FC00335482 /* statistics_pooling.cpp */,
 				49430BF921BEF21700EE4F6A /* statistics_pooling.cl */,
+				49E08DB121C67F6F0066AD53 /* convolution.hpp */,
+				49E08DB021C67F6F0066AD53 /* convolution.cpp */,
+				499C094821C6D8F80017D2C1 /* convolution.cl */,
 			);
 			path = layers;
 			sourceTree = "<group>";
@@ -206,6 +214,7 @@
 				49B78C9821BC496000335482 /* batchnorm.cl in Sources */,
 				49B78C9421BC219300335482 /* relu.cpp in Sources */,
 				492088C021B45467005EAEFE /* dense.cl in Sources */,
+				499C094921C6D8F80017D2C1 /* convolution.cl in Sources */,
 				49B78C9621BC440000335482 /* batchnorm.cpp in Sources */,
 				49B78C9E21BDA4FC00335482 /* statistics_pooling.cpp in Sources */,
 				49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */,
@@ -216,6 +225,7 @@
 				4992111021C028260061C216 /* stacking.cl in Sources */,
 				49B78C9A21BD98A700335482 /* statistics_extraction.cpp in Sources */,
 				490708C321AF060200C27C38 /* nnet.cpp in Sources */,
+				49E08DB221C67F6F0066AD53 /* convolution.cpp in Sources */,
 				490708BB21AF020B00C27C38 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
