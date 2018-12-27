@@ -13,8 +13,6 @@ __kernel void pool_statistics(float variance_floor, unsigned long dim, unsigned 
     else {
         output[globalId] = val[offset + globalId + 1] / cnt;
     }
-    
-//        printf("%f %d %f\n", cnt, dim, output[globalId]);
 }
     
     

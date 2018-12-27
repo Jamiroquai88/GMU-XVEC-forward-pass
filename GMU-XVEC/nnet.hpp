@@ -26,7 +26,7 @@ class Layer {
 public:
     
     virtual void foo() {};
-    void ProfileInfo(std::string type);
+    float ProfileInfo(std::string type);
     void FreeBase();
     
     std::string m_name;

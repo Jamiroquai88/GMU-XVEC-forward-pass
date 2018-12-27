@@ -28,7 +28,7 @@ __kernel void dot_product2(const unsigned long output_size, const unsigned long 
     }
     const unsigned long x = globalId / linear_cols * cols;
     const unsigned long y = globalId % linear_cols * cols;
-//    printf("%d %d %d %d %d %d\n", globalId, rows, cols, linear_cols, x, y);
+
     for (unsigned long i = 0; i < cols; i++)
         output[globalId] += input[x + i] * linear[y + i];
     output[globalId] += bias[globalId % linear_cols];

@@ -349,15 +349,14 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
     fea_rows = rows;
     fea_cols = cols;
     
-    for (unsigned int j = 0; j < 10; j ++) {
-        cl_mem features_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(float) * features.size(), &features[0], &err);
-        if (err < 0) {
-            std::cerr << getCLError(err) << std::endl;
-            exit(1);
-        }
-        cl_mem input = features_buffer;
-        rows = fea_rows;
-        cols = fea_cols;
+    cl_mem features_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(float) * features.size(), &features[0], &err);
+    if (err < 0) {
+        std::cerr << getCLError(err) << std::endl;
+        exit(1);
+    }
+    cl_mem input = features_buffer;
+    rows = fea_rows;
+    cols = fea_cols;
 //        std::cout << features.size() << std::endl;
     for (unsigned int i = 0; i < m_layers.size(); i++) {
         type = m_layers_types[i];
@@ -394,24 +393,24 @@ std::vector<float> NNet::forward(std::string fea_path, cl_device_id device, cl_c
             std::cerr << "Unexpected type of node " << type << "." << std::endl;
             exit(1);
         }
-//        savetxt("/tmp/cpp_layer_" + std::to_string(i) + ".txt", enqueue_buffer(queue, output, rows, cols), rows, cols);
         input = output;
-    }
     
-//    }
+    }
     
     for (unsigned int i = 0; i < m_layers.size(); i++)
         clWaitForEvents(1, &(m_layers[i]->m_profiling_event));
 
     clFinish(queue);
 
+    float sum = 0.0f;
     for (unsigned int i = 0; i < m_layers.size(); i++) {
         type = m_layers_types[i];
-        m_layers[i]->ProfileInfo(type);
+        sum += m_layers[i]->ProfileInfo(type);
     }
+    
+    std::cout << "Profiling: All kernels completed in " << sum << " us." << std::endl;
         
     FreeOutputs();
-    }
     
     std::vector<float> output_vec = enqueue_buffer(queue, output, rows, cols);
     clReleaseMemObject(output);
@@ -464,13 +463,14 @@ void NNet::FreeOutputs(bool is_final) {
 }
 
 
-void Layer::ProfileInfo(std::string type) {
+float Layer::ProfileInfo(std::string type) {
     cl_ulong time_start, time_end;
     clGetEventProfilingInfo(m_profiling_event, CL_PROFILING_COMMAND_START,
                             sizeof(time_start), &time_start, NULL);
     clGetEventProfilingInfo(m_profiling_event, CL_PROFILING_COMMAND_END,
                             sizeof(time_end), &time_end, NULL);
     std::cout << "Profiling: " << type << " kernel completed in " << (time_end - time_start) / 1000 << " us." << std::endl;
+    return (time_end - time_start) / 1000;
 }
 
 

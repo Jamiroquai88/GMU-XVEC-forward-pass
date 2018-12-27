@@ -16,6 +16,8 @@
 		49430BFA21BEF21700EE4F6A /* statistics_pooling.cl in Sources */ = {isa = PBXBuildFile; fileRef = 49430BF921BEF21700EE4F6A /* statistics_pooling.cl */; };
 		4992111021C028260061C216 /* stacking.cl in Sources */ = {isa = PBXBuildFile; fileRef = 4992110F21C028260061C216 /* stacking.cl */; };
 		499C094921C6D8F80017D2C1 /* convolution.cl in Sources */ = {isa = PBXBuildFile; fileRef = 499C094821C6D8F80017D2C1 /* convolution.cl */; };
+		499C094C21D525940017D2C1 /* max_pooling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 499C094A21D525940017D2C1 /* max_pooling.cpp */; };
+		499C094E21D527740017D2C1 /* max_pooling.cl in Sources */ = {isa = PBXBuildFile; fileRef = 499C094D21D527740017D2C1 /* max_pooling.cl */; };
 		49B78C8C21BBDA3700335482 /* stacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8B21BBDA3700335482 /* stacking.cpp */; };
 		49B78C8E21BBDC9500335482 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8D21BBDC9500335482 /* utils.cpp */; };
 		49B78C9021BBF32C00335482 /* dense.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49B78C8F21BBF32C00335482 /* dense.cpp */; };
@@ -60,6 +62,9 @@
 		49430BF921BEF21700EE4F6A /* statistics_pooling.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = statistics_pooling.cl; sourceTree = "<group>"; };
 		4992110F21C028260061C216 /* stacking.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = stacking.cl; sourceTree = "<group>"; };
 		499C094821C6D8F80017D2C1 /* convolution.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = convolution.cl; sourceTree = "<group>"; };
+		499C094A21D525940017D2C1 /* max_pooling.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = max_pooling.cpp; sourceTree = "<group>"; };
+		499C094B21D525940017D2C1 /* max_pooling.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = max_pooling.hpp; sourceTree = "<group>"; };
+		499C094D21D527740017D2C1 /* max_pooling.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = max_pooling.cl; sourceTree = "<group>"; };
 		49B78C8B21BBDA3700335482 /* stacking.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stacking.cpp; sourceTree = "<group>"; };
 		49B78C8D21BBDC9500335482 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		49B78C8F21BBF32C00335482 /* dense.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dense.cpp; sourceTree = "<group>"; };
@@ -141,6 +146,9 @@
 				49E08DB121C67F6F0066AD53 /* convolution.hpp */,
 				49E08DB021C67F6F0066AD53 /* convolution.cpp */,
 				499C094821C6D8F80017D2C1 /* convolution.cl */,
+				499C094B21D525940017D2C1 /* max_pooling.hpp */,
+				499C094A21D525940017D2C1 /* max_pooling.cpp */,
+				499C094D21D527740017D2C1 /* max_pooling.cl */,
 			);
 			path = layers;
 			sourceTree = "<group>";
@@ -211,7 +219,9 @@
 			files = (
 				49B78C9021BBF32C00335482 /* dense.cpp in Sources */,
 				492088C221B45DE2005EAEFE /* opencl_utils.cpp in Sources */,
+				499C094C21D525940017D2C1 /* max_pooling.cpp in Sources */,
 				49B78C9821BC496000335482 /* batchnorm.cl in Sources */,
+				499C094E21D527740017D2C1 /* max_pooling.cl in Sources */,
 				49B78C9421BC219300335482 /* relu.cpp in Sources */,
 				492088C021B45467005EAEFE /* dense.cl in Sources */,
 				499C094921C6D8F80017D2C1 /* convolution.cl in Sources */,

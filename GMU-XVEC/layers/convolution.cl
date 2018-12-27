@@ -17,8 +17,6 @@ __kernel void convolve(__global float *input, __global float *output, __global f
             unsigned long input_row = output_row * stride + kernel_dim_half;
             unsigned long input_col = output_col * stride + kernel_dim_half;
             filter_offset = f * kernel_dim * kernel_dim * input_depth + id * kernel_dim * kernel_dim;
-//            if (globalId == 1)
-//                printf("###Filter offset: %d\n", filter_offset);
         
             for (unsigned long i = 0; i < kernel_dim; i++) {
                 if (i == kernel_dim_half)
@@ -34,17 +32,10 @@ __kernel void convolve(__global float *input, __global float *output, __global f
                     filter_value = weights[filter_offset + i * kernel_dim + j];
                     input_value = input[(input_row + row_jump) * input_dim + (input_col + col_jump) + input_offset];
                     sum += input_value * filter_value;
-//                    if (globalId == 1) {
-//                        printf("%d %d %d %d %f %f\n", row_jump, col_jump, (input_row + row_jump) * input_dim, input_col + col_jump, input_value * filter_value, sum);
-////                        printf("%d %d %d %d %d %d %f %f\n", input_row, input_col, row_jump, col_jump, (input_row + row_jump) * input_dim, input_col + col_jump, input_value * filter_value, sum);
-//                        printf("filter_value: %f input_value: %f sum: %f\n", filter_value, input_value, sum);
-//                    }
                 }
             }
             depth_sum += sum;
         }
-//        if (globalId == 1)
-//            printf("Writing value %f to index %d\n", depth_sum, output_row * output_dim + output_col + output_offset);
         output[output_row * output_dim + output_col + output_offset] = depth_sum;
     }
 }

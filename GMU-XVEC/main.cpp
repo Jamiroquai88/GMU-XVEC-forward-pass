@@ -22,6 +22,7 @@
 #include "layers/statistics_extraction.hpp"
 #include "layers/statistics_pooling.hpp"
 #include "layers/convolution.hpp"
+#include "layers/max_pooling.hpp"
 
 #define MAC
 #define CL_SILENCE_DEPRECATION true
@@ -167,7 +168,34 @@ void test_convolutional_layer(cl_device_id device, cl_context context, cl_comman
         std::cerr << "TEST FAIL: tests/ref_convolution_layer.txt" << std::endl;
         exit(1);
     }
+    layer.Free();
+    layer.FreeBase();
+    clReleaseMemObject(output);
 }
+
+
+void test_max_pooling_layer(cl_device_id device, cl_context context, cl_command_queue queue) {
+    unsigned long rows, cols;
+    std::vector<float> input_image = loadtxt("tests/input_max_pooling_layer.txt", rows, cols);
+    std::vector<float> ref = loadtxt("tests/ref_max_pooling_layer.txt", rows, cols);
+    MaxPoolingLayer layer = MaxPoolingLayer("", 4, 4, 2);
+    cl_int err;
+    cl_mem input_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+                                         sizeof(float) * input_image.size(), &input_image[0], &err);
+    if (err < 0) {
+        std::cerr << getCLError(err) << std::endl;
+        exit(1);
+    }
+    cl_mem output = layer.forward(input_buffer, device, context, queue);
+    if (!allclose(enqueue_buffer(queue, output, 4, 2), ref)) {
+        std::cerr << "TEST FAIL: tests/ref_max_pooling_layer.txt" << std::endl;
+        exit(1);
+    }
+    layer.Free();
+    layer.FreeBase();
+    clReleaseMemObject(output);
+}
+
 
 
 bool test(cl_device_id device, cl_context context, cl_command_queue queue) {
@@ -194,6 +222,7 @@ bool test(cl_device_id device, cl_context context, cl_command_queue queue) {
     
     // test convolutional layer and max-pooling
     test_convolutional_layer(device, context, queue);
+    test_max_pooling_layer(device, context, queue);
     
     std::cerr << "All tests successfully passed." << std::endl;
     return true;
@@ -286,9 +315,9 @@ int main(int argc, char * argv[]) {
     savetxt(output_path, output, rows, cols);
 
  
-//    clReleaseCommandQueue(queue);
-//    clReleaseContext(context);
-//    clReleaseDevice(device);
+    clReleaseCommandQueue(queue);
+    clReleaseContext(context);
+    clReleaseDevice(device);
     
     return 0;
 }

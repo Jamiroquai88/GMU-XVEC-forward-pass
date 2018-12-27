@@ -15,18 +15,9 @@ __kernel void extract_statistics(unsigned long cols, unsigned long rows, int var
             else
                 input2[i * cols + globalId] = input[i * input_cols + globalId - 1];
         }
-//        if (globalId == 17)
-//            printf("%d %d %f %f\n", i * cols + globalId, i * input_cols + globalId - input_cols - 1, input2[i * cols + globalId], input[i * input_cols + globalId - input_cols - 1]);
     }
-//    if (globalId == 17)
-//        printf("\nvaraince offset %d\n", variance_offset);
-
     output[globalId] = input2[globalId];
     for (unsigned long i = 1; i < rows; i++) {
         output[globalId + i * cols] = input2[globalId + i * cols] + output[globalId + (i - 1) * cols];
-//        if (globalId == 0) {
-//            printf("Writing to position: %d, Reading from: %d\n", globalId + i * cols, globalId + (i - 1) * cols);
-//            printf("First: %f, Second: %f, Result: %f", input[globalId + i * cols], output[globalId + i * cols], output[globalId + (i - 1) * cols]);
-//        }
     }
 }
