@@ -10,7 +10,7 @@ __kernel void stack(__global float *input, __global float *output, unsigned long
 
                 if (x1 >= start_row && (y1 + (x1 - start_row) * output_cols) < output_cols * output_rows) {
                     output[y1 + (x1 - start_row) * output_cols] = input[globalId + input_x * cols];
-            
+                }
             input_x++;
         }
     }

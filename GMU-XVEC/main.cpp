@@ -313,7 +313,6 @@ int main(int argc, char * argv[]) {
     unsigned long rows, cols;
     std::vector<float> output = nnet.forward(features_path, device, context, queue, rows, cols);
     savetxt(output_path, output, rows, cols);
-
  
     clReleaseCommandQueue(queue);
     clReleaseContext(context);
