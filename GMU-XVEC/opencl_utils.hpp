@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#define MAC
+
 #define CL_SILENCE_DEPRECATION true
 
 #ifdef MAC

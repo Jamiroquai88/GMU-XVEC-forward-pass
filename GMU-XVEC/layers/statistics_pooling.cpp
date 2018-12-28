@@ -15,8 +15,6 @@
 
 cl_mem StatisticsPoolingLayer::forward(cl_mem input, unsigned long &rows, unsigned long &cols, cl_device_id device, cl_context context, cl_command_queue queue) {
     m_input = input;
-    assert(m_left_context == 0);
-    assert(m_right_context > rows);
     unsigned long offset = (rows - 1) * cols;
     unsigned long dim = (cols - 1) / 2;
     

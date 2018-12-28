@@ -14,7 +14,7 @@
 #include <vector>
 #include <unordered_map>
 
-#define MAC
+
 #ifdef MAC
     #include <OpenCL/cl.h>
 #else

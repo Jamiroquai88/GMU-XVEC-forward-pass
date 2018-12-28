@@ -24,7 +24,7 @@
 #include "layers/convolution.hpp"
 #include "layers/max_pooling.hpp"
 
-#define MAC
+
 #define CL_SILENCE_DEPRECATION true
 
 #ifdef MAC

@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "utils.hpp"
 
-#define MAC
+
 
 #ifdef MAC
 #include <OpenCL/cl.h>
